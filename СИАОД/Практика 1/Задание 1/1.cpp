@@ -3,6 +3,8 @@
 using namespace std;
 
 int main() {
+    
+    setlocale(LC_ALL, "Russian");
     // Задаем исходное значение в шестнадцатеричной системе счисления
     int hexValue = 0x55; // Это значение имеет биты с номерами 0, 2, 4, 6, ...
 
