@@ -1,13 +1,13 @@
 #include <iostream>
 
 using namespace std;
+
 int main() {
-    setlocale(LC_ALL, "Russian");
     int number;
     int mask = 0;
 
     // Вводим значение переменной с клавиатуры
-    cout << "Введите целое число: ";
+    cout << "Vvedite celoe chislo: ";
     cin >> number;
 
     // Устанавливаем биты 5, 3 и 11 в маске (индексация начинается с 0)
@@ -19,7 +19,7 @@ int main() {
     number &= ~mask;
 
     // Выводим результат
-    cout << "Результат: " << number << endl;
+    cout << "Resultat: " << number << endl;
 
     return 0;
 }

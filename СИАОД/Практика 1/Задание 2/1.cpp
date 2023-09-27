@@ -1,42 +1,60 @@
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <random>
 
 using namespace std;
 
-// Функция для вывода битового представления числа
-void printBinary(unsigned int num) {
-    for (int i = 6; i >= 0; i--) {
-        cout << ((num >> i) & 1);
-    }
-}
-
 int main() {
-    vector<unsigned int> numbers; // Массив для хранения чисел в битовом представлении
+    const int maxNum = 9999999;
+    
+    // Ввод количества семизначных чисел
+    int numCount;
+    cout << "Vvedite kolichestvo chisel: ";
+    cin >> numCount;
 
-    // Ввод семизначных чисел с клавиатуры и сохранение их в массиве
-    cout << "Vvedite 7-znachnye chisla (cherez probel): ";
-    for (int i = 0; i < 10; i++) { // Для теста вводим 10 чисел
-        unsigned int num;
-        cin >> num;
-        numbers.push_back(num);
+    // Проверка на неправильный ввод
+    if (numCount <= 0) {
+        cout << "Oshibka.\n";
+        return 1;
     }
 
-    // Сортировка пузырьком (по битовому представлению)
-    int n = numbers.size();
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            if (numbers[j] > numbers[j + 1]) {
-                swap(numbers[j], numbers[j + 1]);
-            }
+    vector<bool> bitArray(maxNum + 1, false);
+    vector<int> randomNumbers;
+
+    // Генерация случайных семизначных чисел
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dis(0, maxNum);
+
+    auto start = chrono::high_resolution_clock::now();
+
+    for (int i = 0; i < numCount; ++i) {
+        int num = dis(gen);
+        randomNumbers.push_back(num);
+        bitArray[num] = true;
+    }
+
+    // Вывод сгенерированных чисел
+    cout << "Generaciya:\n";
+    for (int num : randomNumbers) {
+        cout << num << " ";
+    }
+    cout << "\n";
+
+    // Вывод отсортированных чисел
+    cout << "Otsortirovannie chisla:\n";
+    for (int i = 0; i <= maxNum; ++i) {
+        if (bitArray[i]) {
+            cout << i << " ";
         }
     }
 
-    // Вывод отсортированных чисел
-    cout << "Otsortirovannye chisla:" << endl;
-    for (unsigned int num : numbers) {
-        printBinary(num);
-        cout << endl;
-    }
+    cout << "\n";
+    
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << "Vremya raboti: " << duration.count() << " mc" << endl;
 
     return 0;
 }
