@@ -6,13 +6,11 @@
 
 using namespace std;
 
-// Function to check if a file exists
 bool fileExists(const string &filename) {
     ifstream file(filename);
     return file.good();
 }
 
-// Function to display the menu
 void displayMenu() {
     cout << "1. Отображение содержимого файла" << endl;
     cout << "2. Добавить новую запись" << endl;
@@ -23,7 +21,6 @@ void displayMenu() {
     cout << "Введите свой выбор: ";
 }
 
-// Function to display file content
 void displayFileContent(const string &filename) {
     ifstream file(filename);
     if (file) {
@@ -37,7 +34,6 @@ void displayFileContent(const string &filename) {
     }
 }
 
-// Function to add a new entry
 void addNewEntry(const string &filename, int entry) {
     ofstream file(filename, ios::app);
     if (file) {
@@ -49,7 +45,6 @@ void addNewEntry(const string &filename, int entry) {
     }
 }
 
-// Function to read a value by position
 int readValueByPosition(const string &filename, int position) {
     ifstream file(filename);
     if (file) {
@@ -72,7 +67,6 @@ int readValueByPosition(const string &filename, int position) {
     return -1;
 }
 
-// Function to determine the number of entries
 int countEntries(const string &filename) {
     ifstream file(filename);
     if (file) {
@@ -89,7 +83,6 @@ int countEntries(const string &filename) {
     return -1;
 }
 
-// Function to create a new file with two equal parts
 void createSplitFile(const string &filename) {
     ifstream file(filename);
     if (file) {
@@ -127,27 +120,23 @@ int main() {
     string filename;
     cout << "Введите имя файла: ";
     cin >> filename;
-
     if (!fileExists(filename)) {
         cout << "Ошибка: Файл не существует." << endl;
         return 1;
     }
-
     int choice;
     int value = 0; // Объявляем переменную value
     int count = 0; // Объявляем переменную count
-
     do {
         displayMenu();
         cin >> choice;
-
         switch (choice) {
             case 1:
                 displayFileContent(filename);
                 break;
             case 2:
                 int entry;
-                cout << "ENTERВведите новую запись: ";
+                cout << "Введите новую запись: ";
                 cin >> entry;
                 addNewEntry(filename, entry);
                 break;
