@@ -1,8 +1,8 @@
-установить LLVMlite
+установить LLVMlite                                        https://chat.openai.com/share/b8ac3389-6158-43da-8671-9a7314e9a7cd
 pip install llvmlite
 установить RPLY
 pip install rply
-Читать https://tproger.ru/translations/how-to-create-programming-language
+Читать https://proglib.io/p/your-own-programming-language
 
 1. Операции языка:
    - 1.1. Операции группы "отношение": это операции, которые сравнивают два значения и возвращают результат в виде логического значения (истина или ложь). Примеры операций отношения включают != (не равно), == (равно), < (меньше), <= (меньше или равно), > (больше) и >= (больше или равно).
