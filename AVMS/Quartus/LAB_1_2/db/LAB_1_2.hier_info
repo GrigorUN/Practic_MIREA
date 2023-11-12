@@ -1,0 +1,9 @@
+|LAB_1_2
+a => _.IN1
+b => _.IN0
+c => _.IN0
+c => _.IN0
+d => _.IN1
+y <= y.DB_MAX_OUTPUT_PORT_TYPE
+
+

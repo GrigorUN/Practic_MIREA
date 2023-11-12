@@ -1,0 +1,7 @@
+SUBDESIGN 'LAB_1_2' (
+	a,b,c,d : INPUT;
+	y: OUTPUT;
+)
+BEGIN
+	y = ((!c AND d) OR b AND ( c XOR a));
+END;
