@@ -1,0 +1,11 @@
+vendor_name = ModelSim
+source_file = 1, C:/Users/SystemX/Documents/GitHub/Practic_MIREA/AVMS/Quartus/LAB1_1.bdf
+source_file = 1, C:/Users/SystemX/Documents/GitHub/Practic_MIREA/AVMS/Quartus/Waveform.vwf
+source_file = 1, Waveform1.vwf
+source_file = 1, C:/Users/SystemX/Documents/GitHub/Practic_MIREA/AVMS/Quartus/db/LAB1_1.cbx.xml
+design_name = LAB1_1
+instance = comp, \Y~output , Y~output, LAB1_1, 1
+instance = comp, \B~input , B~input, LAB1_1, 1
+instance = comp, \D~input , D~input, LAB1_1, 1
+instance = comp, \A~input , A~input, LAB1_1, 1
+instance = comp, \C~input , C~input, LAB1_1, 1

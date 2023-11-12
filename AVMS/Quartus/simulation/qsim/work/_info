@@ -1,0 +1,85 @@
+m255
+K3
+13
+cModel Technology
+Z0 dC:\Users\SystemX\Documents\GitHub\Practic_MIREA\AVMS\Quartus\simulation\qsim
+vLAB1_1
+Z1 IIHj4U8D>>_9Geb79<X_0Q2
+Z2 VI]hMI;aUidoMGNJ_Niooj2
+Z3 dC:\Users\SystemX\Documents\GitHub\Practic_MIREA\AVMS\Quartus\simulation\qsim
+Z4 w1699801951
+Z5 8LAB1_1.vo
+Z6 FLAB1_1.vo
+L0 31
+Z7 OV;L;10.1d;51
+r1
+31
+Z8 !s90 -work|work|LAB1_1.vo|
+Z9 o-work work -O0
+Z10 n@l@a@b1_1
+!i10b 1
+Z11 !s100 Bc0z[W;5oQfP`P<LG]i@E0
+!s85 0
+Z12 !s108 1699801952.304000
+Z13 !s107 LAB1_1.vo|
+!s101 -O0
+vLAB1_1_vlg_check_tst
+!i10b 1
+Z14 !s100 PefZNVmVh>PD]3NX3Hi7E3
+Z15 INC<zZkTQTQOe?Ue]MIB;R2
+Z16 V6_5faD[A@=Md;7901E=Qm3
+R3
+Z17 w1699801950
+Z18 8Waveform.vwf.vt
+Z19 FWaveform.vwf.vt
+L0 63
+R7
+r1
+!s85 0
+31
+Z20 !s108 1699801952.450000
+Z21 !s107 Waveform.vwf.vt|
+Z22 !s90 -work|work|Waveform.vwf.vt|
+!s101 -O0
+R9
+Z23 n@l@a@b1_1_vlg_check_tst
+vLAB1_1_vlg_sample_tst
+!i10b 1
+Z24 !s100 U]HCz;TTzb7Z1;ZkgLcK;1
+Z25 I8Q5Sf[7UL_bC@>;R3Tdbz3
+Z26 VP2I59aRH0E1S`ahP6^c6B2
+R3
+R17
+R18
+R19
+L0 29
+R7
+r1
+!s85 0
+31
+R20
+R21
+R22
+!s101 -O0
+R9
+Z27 n@l@a@b1_1_vlg_sample_tst
+vLAB1_1_vlg_vec_tst
+!i10b 1
+Z28 !s100 >bJ>HgTiT_0m:aPX_i`A@1
+Z29 I]A^Lj2SY9CggiVnEXbo4N1
+Z30 V>7^WBgb=9Z8m6>n:Q4UbB0
+R3
+R17
+R18
+R19
+Z31 L0 158
+R7
+r1
+!s85 0
+31
+R20
+R21
+R22
+!s101 -O0
+R9
+Z32 n@l@a@b1_1_vlg_vec_tst
