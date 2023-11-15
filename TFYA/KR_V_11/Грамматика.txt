@@ -16,8 +16,4 @@ power           : atom(POW factor)*
 atom            : INT|FLOAT|IDENTIFIER
                 : LPAREN expr RPAREN
         
-123 == 123
 
-5 + 5 == 3 + 7
-
->>> (5+5) == (3+7)
