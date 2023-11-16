@@ -41,7 +41,7 @@ t_ignore = ' \t\n'
 
 # Обработка ошибок
 def t_error(t):
-    print(f"Unrecognized: {t.value[0]}")
+    print(f"Ошибка: {t.value[0]}")
     t.lexer.skip(1)
 
 
@@ -71,6 +71,6 @@ if __name__ == "__main__":
             break
         tokenlist.append((token.type, token.value))
 
-    print("Tokenlist:")
+    print("Токен лист:")
     for token in tokenlist:
         print(f"({token[0]}, '{token[1]}')")
