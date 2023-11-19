@@ -192,6 +192,20 @@ class Lexer:
                 tokens.append(self.make_less_than())
             elif self.current_char == '>':
                 tokens.append(self.make_greater_than())
+            elif self.current_char == '&':
+                if self.peek() == '&':
+                    self.advance()
+                    tokens.append(Token(TT_KEYWORD, '&&', pos_start=self.pos))
+                    self.advance()
+                else:
+                    return [], IllegalCharError(self.pos_start, self.pos_end, "'&'")
+            elif self.current_char == '|':
+                if self.peek() == '|':
+                    self.advance()
+                    tokens.append(Token(TT_KEYWORD, '||', pos_start=self.pos))
+                    self.advance()
+                else:
+                    return [], IllegalCharError(self.pos_start, self.pos_end, "'|'")
             else:
                 pos_start = self.pos.copy()
                 char = self.current_char
@@ -506,7 +520,11 @@ class Parser:
             res.register_advancement()
             self.advance()
             right = res.register(func_b())
-            if res.error: return res
+            if res.error:
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end,
+                    "Ожидается int, float, идентификатор, '+', '-', '(' или '!' "
+                ))
             left = BinOpNode(left, op_tok, right)
 
         return res.successs(left)
@@ -575,6 +593,12 @@ class Number:
     def get_comparison_eq(self, other):
         if isinstance(other, Number):
             return Number(int(self.value == other.value)).set_context(self.context), None
+    
+    # В методе get_comparison_ne
+    def get_comparison_ne(self, other):
+        if isinstance(other, Number):
+            return Number(int(self.value != other.value)).set_context(self.context), None
+
     
     def get_comparget_comparison_neison_ne(self, other):
         if isinstance(other, Number):
@@ -704,9 +728,16 @@ class Interpreter:
         elif node.op_tok.type == TT_GTE:
             result, error = left.get_comparison_gte(right)
         elif node.op_tok.matches(TT_KEYWORD, '&&'):
-            result, error = left.anded_by(right)
+            result = Number(1) if left.value != 0 and right.value != 0 else Number(0)
+            error = None
         elif node.op_tok.matches(TT_KEYWORD, '||'):
-            result, error = left.ored_by(right)
+            result = Number(1) if left.value != 0 or right.value != 0 else Number(0)
+            error = None
+        else:
+            return res.failure(InvalidSyntaxError(
+                node.op_tok.pos_start, node.op_tok.pos_end,
+                "Неизвестный оператор"
+            ))
             
         if error:
             return res.failure(error)
