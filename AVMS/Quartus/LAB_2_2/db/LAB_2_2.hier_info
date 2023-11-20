@@ -1,0 +1,16 @@
+|LAB_2_2
+a0 => _.IN0
+a0 => _.IN0
+a0 => _.IN0
+a1 => _.IN0
+a1 => _.IN0
+a2 => _.IN0
+b0 => _.IN1
+b0 => _.IN1
+b0 => _.IN1
+b1 => _.IN1
+b1 => _.IN1
+b2 => _.IN1
+y <= y.DB_MAX_OUTPUT_PORT_TYPE
+
+

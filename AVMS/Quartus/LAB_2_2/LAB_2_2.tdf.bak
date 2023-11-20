@@ -1,0 +1,7 @@
+subdesign 'LAB_2_2' (
+	a0,a1,a2,b0,b1,b2 : input;
+	y : output;
+)
+begin
+	y = (((!a2 and b2) and (a1 XNOR b1) and (a0 XNOR b0)) or ((!a1 and b1) and (!a0 and b0))  or (!a0 and b0));
+end;

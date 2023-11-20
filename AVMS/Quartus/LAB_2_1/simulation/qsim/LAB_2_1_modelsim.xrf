@@ -1,0 +1,14 @@
+vendor_name = ModelSim
+source_file = 1, D:/Work/Practic_MIREA/AVMS/Quartus/LAB_2_1/LAB_2_1.bdf
+source_file = 1, D:/Work/Practic_MIREA/AVMS/Quartus/LAB_2_1/Waveform.vwf
+source_file = 1, D:/Work/Practic_MIREA/AVMS/Quartus/LAB_2_1/db/LAB_2_1.cbx.xml
+design_name = LAB_2_1
+instance = comp, \LESS~output , LESS~output, LAB_2_1, 1
+instance = comp, \A0~input , A0~input, LAB_2_1, 1
+instance = comp, \B0~input , B0~input, LAB_2_1, 1
+instance = comp, \A2~input , A2~input, LAB_2_1, 1
+instance = comp, \A1~input , A1~input, LAB_2_1, 1
+instance = comp, \B2~input , B2~input, LAB_2_1, 1
+instance = comp, \B1~input , B1~input, LAB_2_1, 1
+instance = comp, \inst10~0 , inst10~0, LAB_2_1, 1
+instance = comp, \inst10~1 , inst10~1, LAB_2_1, 1

@@ -1,0 +1,14 @@
+|LAB_2_1
+LESS <= inst10.DB_MAX_OUTPUT_PORT_TYPE
+A1 => inst3.IN0
+A1 => inst2.IN0
+B1 => inst4.IN1
+B1 => inst2.IN1
+A0 => inst7.IN0
+A0 => inst8.IN0
+B0 => inst7.IN1
+B0 => inst9.IN1
+A2 => inst.IN0
+B2 => inst1.IN1
+
+
