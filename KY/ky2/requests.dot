@@ -1,0 +1,16 @@
+digraph G {
+requests -> charset_normalizer;
+requests -> idna;
+requests -> urllib3;
+urllib3 -> brotli;
+urllib3 -> brotlicffi;
+brotlicffi -> cffi;
+urllib3 -> pysocks;
+urllib3 -> zstandard;
+zstandard -> cffi;
+zstandard -> cffi;
+requests -> certifi;
+requests -> PySocks;
+requests -> chardet;
+
+}
