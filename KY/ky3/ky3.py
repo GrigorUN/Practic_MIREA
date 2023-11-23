@@ -1,4 +1,3 @@
-
 from sly import Lexer, Parser
 import json
 import codecs
