@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<LOG_ROOT>
+	<PROJECT NAME="LAB_3">
+		<CBX_INST_ENTRY INSTANCE_NAME="|LAB_3|lpm_compare0:inst|lpm_compare:LPM_COMPARE_component" CBX_FILE_NAME="cmpr_rpg.tdf"/>
+	</PROJECT>
+</LOG_ROOT>

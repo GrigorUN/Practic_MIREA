@@ -1,0 +1,48 @@
+|LAB_3
+LESS <= lpm_compare0:inst.alb
+a[0] => lpm_compare0:inst.dataa[0]
+a[1] => lpm_compare0:inst.dataa[1]
+a[2] => lpm_compare0:inst.dataa[2]
+b[0] => lpm_compare0:inst.datab[0]
+b[1] => lpm_compare0:inst.datab[1]
+b[2] => lpm_compare0:inst.datab[2]
+
+
+|LAB_3|lpm_compare0:inst
+dataa[0] => lpm_compare:LPM_COMPARE_component.dataa[0]
+dataa[1] => lpm_compare:LPM_COMPARE_component.dataa[1]
+dataa[2] => lpm_compare:LPM_COMPARE_component.dataa[2]
+datab[0] => lpm_compare:LPM_COMPARE_component.datab[0]
+datab[1] => lpm_compare:LPM_COMPARE_component.datab[1]
+datab[2] => lpm_compare:LPM_COMPARE_component.datab[2]
+alb <= lpm_compare:LPM_COMPARE_component.alb
+
+
+|LAB_3|lpm_compare0:inst|lpm_compare:LPM_COMPARE_component
+dataa[0] => cmpr_rpg:auto_generated.dataa[0]
+dataa[1] => cmpr_rpg:auto_generated.dataa[1]
+dataa[2] => cmpr_rpg:auto_generated.dataa[2]
+datab[0] => cmpr_rpg:auto_generated.datab[0]
+datab[1] => cmpr_rpg:auto_generated.datab[1]
+datab[2] => cmpr_rpg:auto_generated.datab[2]
+clock => ~NO_FANOUT~
+aclr => ~NO_FANOUT~
+clken => ~NO_FANOUT~
+alb <= cmpr_rpg:auto_generated.alb
+aeb <= <GND>
+agb <= <GND>
+aleb <= <GND>
+aneb <= <GND>
+ageb <= <GND>
+
+
+|LAB_3|lpm_compare0:inst|lpm_compare:LPM_COMPARE_component|cmpr_rpg:auto_generated
+alb <= alb_int.DB_MAX_OUTPUT_PORT_TYPE
+dataa[0] => op_1.IN5
+dataa[1] => op_1.IN3
+dataa[2] => op_1.IN1
+datab[0] => op_1.IN6
+datab[1] => op_1.IN4
+datab[2] => op_1.IN2
+
+
