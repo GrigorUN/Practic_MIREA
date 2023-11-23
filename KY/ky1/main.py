@@ -21,7 +21,7 @@ while 1:
     cmd = list(map(str, input().split()))
     if len(cmd) > 0:
         if cmd[0] == "exit" or cmd[0] == "quit":
-            print('*' * 17 + "\nPROGRAM SHUT DOWN\n" + '*' * 17)
+            print('*' * 17 + "\nПРОГРАММА ЗАКРЫТА\n" + '*' * 17)
             exit(0)
 
         elif cmd[0] == "pwd":
