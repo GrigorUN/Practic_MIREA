@@ -103,7 +103,11 @@ KEYWORDS =[
     'var',
     '&&',
     '||',
-    '!'
+    '!',
+    'if',
+    'then',
+    'elif',
+    'else'
 ]
 
 
@@ -340,6 +344,14 @@ class UnaryOpNode:
 
     def __repr__(self):
         return f'({self.op_tok}, {self.node})'
+    
+class IfNode:
+    def __init__(self, cases, else_case):
+        self.cases = cases
+        self.else_case = else_case
+        
+        self.pos_start = self.cases[0][0].pos_start
+        self.pos_end = (self.else_case or self.cases[len(self.cases)-1][0]).pos_end
 
 #ЧТО ТО ТИПО ПРОМЕЖУТОЧНЫХ РЕЗУЛЬТАТОВ ПАРСЕРА
 
@@ -357,7 +369,7 @@ class ParseResult:
         if res.error: self.error = res.error
         return res.node
 
-    def successs(self, node):
+    def success(self, node):
         self.node = node;
         return self
 
@@ -365,6 +377,8 @@ class ParseResult:
         if not self.error or self.advance_count == 0:
             self.error = error
         return self
+    
+
 
 
 #ЧТО ТО ТИПО ПАРСЕРА
@@ -391,7 +405,67 @@ class Parser:
             ))
         return res 
 
+    def if_expr(self):
+        res = ParseResult()
+        cases = []
+        else_case = None
 
+        if not self.current_tok.matches(TT_KEYWORD, 'if'):
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end,
+                f"Ожидвется 'if'"
+            ))
+
+        res.register_advancement()
+        self.advance()
+
+        condition = res.register(self.expr())
+        if res.error: return res
+
+        if not self.current_tok.matches(TT_KEYWORD, 'then'):
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end,
+                f"Ожидается 'then'"
+            ))
+
+        res.register_advancement()
+        self.advance()
+
+        expr = res.register(self.expr())
+        if res.error: return res
+        cases.append((condition, expr))
+
+        while self.current_tok.matches(TT_KEYWORD, 'elif'):
+            res.register_advancement()
+            self.advance()
+
+            condition = res.register(self.expr())
+            if res.error: return res
+
+            if not self.current_tok.matches(TT_KEYWORD, 'then'):
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end,
+                    f"Ожидается 'tnen'"
+                ))
+
+            res.register_advancement()
+            self.advance()
+
+            expr = res.register(self.expr())
+            if res.error: return res
+            cases.append((condition, expr))
+
+        if self.current_tok.matches(TT_KEYWORD, 'else'):
+            res.register_advancement()
+            self.advance()
+
+            else_case = res.register(self.expr())
+            if res.error: return res
+
+        return res.success(IfNode(cases, else_case))
+
+
+                
     def atom(self):
         res = ParseResult()
         tok = self.current_tok
@@ -399,12 +473,12 @@ class Parser:
         if tok.type in (TT_INT, TT_FLOAT):
             res.register_advancement()
             self.advance()
-            return res.successs(NumberNode(tok))
+            return res.success(NumberNode(tok))
         
         elif tok.type == TT_IDENTIFIER:
             res.register_advancement()
             self.advance()
-            return res.successs(VarAccessNode(tok))
+            return res.success(VarAccessNode(tok))
         
         elif tok.type == TT_LPAREN:
             res.register_advancement()
@@ -414,12 +488,17 @@ class Parser:
             if self.current_tok.type == TT_RPAREN:
                 res.register_advancement()
                 self.advance()
-                return res.successs(expr)
+                return res.success(expr)
             else:
                 return res.failure(InvalidSyntaxError(
                     self.current_tok.pos_start, self.current_tok.pos_end,
                     "Ожидается ')' "
                 ))
+                
+        elif tok.matches(TT_KEYWORD, 'if'):
+            if_expr = res.register(self.if_expr())
+            if res.error: return res
+            return res.success(if_expr)
                 
         return res.failure(InvalidSyntaxError(tok.pos_start, tok.pos_end, "Ожидается int, float, идентификатор, '+', '-' или '(' "))
 
@@ -435,7 +514,7 @@ class Parser:
             self.advance()
             factor = res.register(self.factor())
             if res.error: return res
-            return res.successs(UnaryOpNode(tok, factor))
+            return res.success(UnaryOpNode(tok, factor))
         
         return self.power()
         
@@ -455,7 +534,7 @@ class Parser:
             
             node = res.register(self.comp_expr())
             if res.error: return res
-            return res.successs(UnaryOpNode(op_tok, node))
+            return res.success(UnaryOpNode(op_tok, node))
         
         node = res.register(self.bin_op(self.arith_expr, (TT_EE, TT_NE, TT_LT, TT_GT, TT_LTE, TT_GTE)))
 
@@ -465,7 +544,7 @@ class Parser:
                 "Ожидается int, float, идентификатор, '+', '-', '(' или '!' "
             ))
         
-        return res.successs(node)
+        return res.success(node)
 
     
     def expr(self):
@@ -496,7 +575,7 @@ class Parser:
 
             expr = res.register(self.expr())
             if res.error: return res
-            return res.successs(VarAssignNode(var_name, expr))
+            return res.success(VarAssignNode(var_name, expr))
 
         node =  res.register(self.bin_op(self.comp_expr, ((TT_KEYWORD, '&&'), (TT_KEYWORD, '||'))))  # Обновите эту строку
 
@@ -506,7 +585,7 @@ class Parser:
                 "Ожидается 'var', int, float, идентификатор, '+', '-' или '(' "
             ))
         
-        return res.successs(node)
+        return res.success(node)
     
     def bin_op(self, func_a, ops, func_b = None):
         if func_b == None:
@@ -527,7 +606,7 @@ class Parser:
                 ))
             left = BinOpNode(left, op_tok, right)
 
-        return res.successs(left)
+        return res.success(left)
 
 # РЕЗУЛЬТАТ RUNTIME
 
@@ -628,6 +707,10 @@ class Number:
         copy.set_pos(self.pos_start, self.pos_end)
         copy.set_context(self.context)
         return copy
+    
+    def is_true(self):
+        return self.value != 0 
+    
     
     def __repr__(self):
         return str(self.value)
@@ -761,6 +844,25 @@ class Interpreter:
             return res.failure(error)
         else:
             return number.set_pos(node.pos_start, node.pos_end)
+        
+    def visit_IfNode(self, node, context):
+        res = RTResult()
+        
+        for condition, expr in node.cases:
+            condition_value = res.register(self.visit(condition, context))
+            if res.error: return res
+
+            if condition_value.is_true():
+                expr_value = res.register(self.visit(expr, context))
+                if res.error: return res
+                return res.success(expr_value)
+            
+        if node.else_case:
+            else_value = res.register(self.visit(node.else_case, context))
+            if res.error: return res
+            return res.success(else_value)
+        
+        return res.success(None)
 
 
 global_symbol_table = SymbolTable()
