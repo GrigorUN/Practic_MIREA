@@ -103,6 +103,17 @@ void PrintTree(Tnode* root, int level, int L) {
     }
 }
 
+// Функция для создания дерева на основе массива значений
+Tnode* CreateTree(int values[], int numElements) {
+    Tnode* root = NULL;
+
+    for (int i = 0; i < numElements; i++) {
+        root = InsertNode(root, values[i]);
+    }
+
+    return root;
+}
+
 int main() {
     Tnode* root = NULL;
 
@@ -111,12 +122,14 @@ int main() {
     cout << "Введите количество элементов узлов дерева: ";
     cin >> numElements;
 
+    int values[numElements];
     for (int i = 0; i < numElements; i++) {
-        int element;
         cout << "Введите значение " << i + 1 << "-го элемента: ";
-        cin >> element;
-        root = InsertNode(root, element);
+        cin >> values[i];
     }
+
+    // Используйте функцию CreateTree для создания дерева
+    root = CreateTree(values, numElements);
 
     // Отобразить дерево на экране
     cout << "Бинарное дерево: " << endl;
