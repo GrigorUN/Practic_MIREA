@@ -21,3 +21,8 @@ if-expr         : KEYWORD: if expr KEYWORD: then expr
                     (KEYWORD:elif expr KEYWORD:then expr)*
                     (KEYWORD:else expr)?    
 
+for-expr        : KEYWORD: for IDENTIFIER EQ expr KEYWORD: to expr
+                  (KEYWORD:do expr)? KEYWORD: do expr
+
+while-expr      : KEYWORD: while expr KEYWORD: do expr
+
