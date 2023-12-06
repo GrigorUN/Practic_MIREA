@@ -98,6 +98,8 @@ TT_LT           = 'LT'
 TT_GT           = 'GT'
 TT_LTE          = 'LTE'
 TT_GTE          = 'GTE'
+TT_COMMA        = 'COMMA'
+TT_ARROW        = 'ARROW'
 
 
 KEYWORDS =[
@@ -113,7 +115,8 @@ KEYWORDS =[
     'to',
     'step',
     'then',
-    'while'
+    'while',
+    'func'
 ]
 
 
@@ -169,8 +172,7 @@ class Lexer:
             elif self.current_char == '"':
                 tokens.append(self.make_string())
             elif self.current_char == '+':
-                tokens.append(Token(TT_PLUS, pos_start=self.pos))
-                self.advance()
+                tokens.append(self.make_minus_or_arrow())
             elif self.current_char == '-':
                 tokens.append(Token(TT_MINUS, pos_start=self.pos))
                 self.advance()
@@ -204,6 +206,9 @@ class Lexer:
                 tokens.append(self.make_less_than())
             elif self.current_char == '>':
                 tokens.append(self.make_greater_than())
+            elif self.current_char == ',':
+                tokens.append(Token(TT_COMMA, pos_start=self.pos))
+                self.advance()
             elif self.current_char == '&':
                 if self.peek() == '&':
                     self.advance()
@@ -282,6 +287,17 @@ class Lexer:
         tok_type = TT_KEYWORD if id_str in KEYWORDS else TT_IDENTIFIER
         return Token(tok_type, id_str, pos_start, self.pos)
 
+    def make_minus_or_arrow(self):
+        tok_type = TT_MINUS
+        pos_start = self.pos.copy()
+        self.advance()
+
+        if self.current_char == '>':
+            self.advance()
+            tok_type = TT_ARROW
+
+        return Token(tok_type, pos_start=pos_start, pos_end=self.pos)
+    
     def make_not_equals(self):
         pos_start = self.pos.copy()
         self.advance()
@@ -415,6 +431,32 @@ class WhileNode:
         self.pos_start = self.condition_node.pos_start
         self.pos_end = self.body_node.pos_end
 
+class FuncDefNode:
+    def __init__(self, var_name_tok, arg_name_toks, body_node):
+        self.var_name_tok = var_name_tok
+        self.arg_name_toks = arg_name_toks
+        self.body_node = body_node
+
+        if self.var_name_tok:
+            self.pos_start = self.var_name_tok.pos_start
+        elif len(self.arg_name_toks) > 0:
+            self.pos_start = self.arg_name_toks[0].pos_start
+        else:
+            self.pos_start = self.body_node.pos_start
+
+        self.pos_end = self.body_node.pos_end
+
+class CallNode:
+    def __init__(self, node_to_call, arg_nodes):
+        self.node_to_call = node_to_call
+        self.arg_nodes = arg_nodes
+
+        self.pos_start = self.node_to_call.pos_start
+
+        if len(self.arg_nodes) > 0:
+            self.pos_end = self.arg_nodes[len(self.arg_nodes) - 1].pos_end
+        else:
+            self.pos_end = self.node_to_call.pos_end
 
 #ЧТО ТО ТИПО ПРОМЕЖУТОЧНЫХ РЕЗУЛЬТАТОВ ПАРСЕРА
 
@@ -624,6 +666,45 @@ class Parser:
         if res.error: return res
 
         return res.success(WhileNode(condition, body))
+    
+    def call(self):
+        res = ParseResult()
+        atom = res.register(self.atom())
+        if res.error: return res
+
+        if self.current_tok.type == TT_LPAREN:
+            res.register_advancement()
+            self.advance()
+            arg_nodes = []
+
+            if self.current_tok.type == TT_RPAREN:
+                res.register_advancement()
+                self.advance()
+            else:
+                arg_nodes.append(res.register(self.expr()))
+                if res.error:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end,
+                        "Expected ')', 'VAR', 'IF', 'FOR', 'WHILE', 'FUN', int, float, identifier, '+', '-', '(' or 'NOT'"
+                    ))
+
+                while self.current_tok.type == TT_COMMA:
+                    res.register_advancement()
+                    self.advance()
+
+                    arg_nodes.append(res.register(self.expr()))
+                    if res.error: return res
+
+                if self.current_tok.type != TT_RPAREN:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end,
+                        f"Expected ',' or ')'"
+                    ))
+
+                res.register_advancement()
+                self.advance()
+            return res.success(CallNode(atom, arg_nodes))
+        return res.success(atom)
                 
     def atom(self):
         res = ParseResult()
@@ -673,14 +754,19 @@ class Parser:
             while_expr = res.register(self.while_expr())
             if res.error: return res
             return res.success(while_expr)
+        
+        elif tok.matches(TT_KEYWORD, 'func'):
+            func_def = res.register(self.func_def())
+            if res.error: return res
+            return res.success(func_def)
                 
         return res.failure(InvalidSyntaxError(
             tok.pos_start, tok.pos_end, 
-            "Ожидается int, float, идентификатор, '+', '-' или '(' "
+            "Ожидается int, float, идентификатор, '+', '-', '(', 'while', 'if', 'for', 'func' "
             ))
 
     def power(self):
-        return self.bin_op(self.atom, (TT_POW,), self.factor)
+        return self.bin_op(self.call, (TT_POW,), self.factor)
     
     def factor(self):
         res = ParseResult()
@@ -764,6 +850,90 @@ class Parser:
         
         return res.success(node)
     
+    def func_def(self):
+        res = ParseResult()
+
+        if not self.current_tok.matches(TT_KEYWORD, 'FUN'):
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end,
+                f"Expected 'FUN'"
+            ))
+
+        res.register_advancement()
+        self.advance()
+
+        if self.current_tok.type == TT_IDENTIFIER:
+            var_name_tok = self.current_tok
+            res.register_advancement()
+            self.advance()
+            if self.current_tok.type != TT_LPAREN:
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end,
+                    f"Expected '('"
+                ))
+        else:
+            var_name_tok = None
+            if self.current_tok.type != TT_LPAREN:
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end,
+                    f"Expected identifier or '('"
+                ))
+        
+        res.register_advancement()
+        self.advance()
+        arg_name_toks = []
+
+        if self.current_tok.type == TT_IDENTIFIER:
+            arg_name_toks.append(self.current_tok)
+            res.register_advancement()
+            self.advance()
+            
+            while self.current_tok.type == TT_COMMA:
+                res.register_advancement()
+                self.advance()
+
+                if self.current_tok.type != TT_IDENTIFIER:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end,
+                        f"Expected identifier"
+                    ))
+
+                arg_name_toks.append(self.current_tok)
+                res.register_advancement()
+                self.advance()
+            
+            if self.current_tok.type != TT_RPAREN:
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end,
+                    f"Expected ',' or ')'"
+                ))
+        else:
+            if self.current_tok.type != TT_RPAREN:
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end,
+                    f"Expected identifier or ')'"
+                ))
+
+        res.register_advancement()
+        self.advance()
+
+        if self.current_tok.type != TT_ARROW:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end,
+                f"Expected '->'"
+            ))
+
+        res.register_advancement()
+        self.advance()
+        node_to_return = res.register(self.expr())
+        if res.error: return res
+
+        return res.success(FuncDefNode(
+            var_name_tok,
+            arg_name_toks,
+            node_to_return
+        ))
+    
     def bin_op(self, func_a, ops, func_b = None):
         if func_b == None:
             func_b = func_a
@@ -807,182 +977,328 @@ class RTResult:
 #ЧИСЛА
 
 class Value:
-	def __init__(self):
-		self.set_pos()
-		self.set_context()
+    def __init__(self):
+        self.set_pos()
+        self.set_context()
 
-	def set_pos(self, pos_start=None, pos_end=None):
-		self.pos_start = pos_start
-		self.pos_end = pos_end
-		return self
+    def set_pos(self, pos_start=None, pos_end=None):
+        self.pos_start = pos_start
+        self.pos_end = pos_end
+        return self
 
-	def set_context(self, context=None):
-		self.context = context
-		return self
+    def set_context(self, context=None):
+        self.context = context
+        return self
 
-	def added_to(self, other):
-		return None, self.illegal_operation(other)
+    def added_to(self, other):
+        return None, self.illegal_operation(other)
 
-	def subbed_by(self, other):
-		return None, self.illegal_operation(other)
+    def subbed_by(self, other):
+        return None, self.illegal_operation(other)
 
-	def multed_by(self, other):
-		return None, self.illegal_operation(other)
+    def multed_by(self, other):
+        return None, self.illegal_operation(other)
 
-	def dived_by(self, other):
-		return None, self.illegal_operation(other)
+    def dived_by(self, other):
+        return None, self.illegal_operation(other)
 
-	def powed_by(self, other):
-		return None, self.illegal_operation(other)
+    def powed_by(self, other):
+        return None, self.illegal_operation(other)
 
-	def get_comparison_eq(self, other):
-		return None, self.illegal_operation(other)
+    def get_comparison_eq(self, other):
+        return None, self.illegal_operation(other)
 
-	def get_comparison_ne(self, other):
-		return None, self.illegal_operation(other)
+    def get_comparison_ne(self, other):
+        return None, self.illegal_operation(other)
 
-	def get_comparison_lt(self, other):
-		return None, self.illegal_operation(other)
+    def get_comparison_lt(self, other):
+        return None, self.illegal_operation(other)
 
-	def get_comparison_gt(self, other):
-		return None, self.illegal_operation(other)
+    def get_comparison_gt(self, other):
+        return None, self.illegal_operation(other)
 
-	def get_comparison_lte(self, other):
-		return None, self.illegal_operation(other)
+    def get_comparison_lte(self, other):
+        return None, self.illegal_operation(other)
 
-	def get_comparison_gte(self, other):
-		return None, self.illegal_operation(other)
+    def get_comparison_gte(self, other):
+        return None, self.illegal_operation(other)
 
-	def anded_by(self, other):
-		return None, self.illegal_operation(other)
+    def anded_by(self, other):
+        return None, self.illegal_operation(other)
 
-	def ored_by(self, other):
-		return None, self.illegal_operation(other)
+    def ored_by(self, other):
+        return None, self.illegal_operation(other)
 
-	def notted(self):
-		return None, self.illegal_operation()
+    def notted(self):
+        return None, self.illegal_operation()
 
-	def execute(self, args):
-		return RTResult().failure(self.illegal_operation())
+    def execute(self, args):
+        return RTResult().failure(self.illegal_operation())
 
-	def copy(self):
-		raise Exception('Метод копирования не определен')
+    def copy(self):
+        raise Exception('Метод копирования не определен')
 
-	def is_true(self):
-		return False
+    def is_true(self):
+        return False
 
-	def illegal_operation(self, other=None):
-		if not other: other = self
-		return RTError(
-			self.pos_start, other.pos_end,
-			'Незаконная операция',
-			self.context
-		)
+    def illegal_operation(self, other=None):
+        if not other: other = self
+        return RTError(
+            self.pos_start, other.pos_end,
+            'Незаконная операция',
+            self.context
+        )
+
+class BaseFunction(Value):
+    def __init__(self, name):
+        super().__init__()
+        self.name = name or "<anonymous>" 
+    
+    def generate_new_context(self):
+        new_context = Context(self.name, self.context, self.pos_start)
+        new_context.symbol_table = SymbolTable(new_context.parent.symbol_table)
+        return new_context
+    
+    def check_args(self, arg_names, args):
+        res = RTResult()
+        
+        if len(args) > len(arg_names):
+            return res.failure(RTError(
+                self.pos_start, self.pos_end,
+                f"{len(args) - len(arg_names)} слишком много переменных, передаваемых в '{self}'",
+                self.context  
+            ))
+        
+        if len(args) < len(arg_names):
+            return res.failure(RTError(
+                self.pos_start, self.pos_end,
+                f"{len(args) - len(arg_names)} слишком мало переменных, передаваемых в '{self}'",
+                self.context  
+            ))
+            
+        return res.success(None)
+    
+    def populate_args(self, arg_names, args, exec_ctx):
+        for i in range(len(args)):
+            arg_name = arg_names[i]
+            arg_value = args[i]
+            arg_value.set_context(exec_ctx)
+            exec_ctx.symbol_table.set(arg_name, arg_value)
+            
+    def check_and_populate_args(self, arg_names, args, exec_ctx):
+        res = RTResult()
+        res.register(self.check_args(arg_names,args))
+        if res.error: return res
+        self.populate_args(arg_names, args, exec_ctx)
+        return res.success(None)
+    
+
+class Function(BaseFunction):
+    def __init__(self, name, body_node, arg_names):
+        super().__init__(name)
+        self.body_node = body_node
+        self.arg_names = arg_names
+
+    def execute(self, args):
+        res = RTResult()
+        interpreter = Interpreter()
+        exec_ctx = self.generate_new_context()
+
+        res.register(self.check_and_populate_args(self.arg_names, args, exec_ctx))
+        if res.error: return res
+
+        value = res.register(interpreter.visit(self.body_node, exec_ctx))
+        if res.error: return res
+        return res.success(value)
+
+    def copy(self):
+        copy = Function(self.name, self.body_node, self.arg_names)
+        copy.set_context(self.context)
+        copy.set_pos(self.pos_start, self.pos_end)
+        return copy
+
+    def __repr__(self):
+        return f"<function {self.name}>"
+                
+class BuiltInFunction(BaseFunction):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def execute(self, args):
+        res = RTResult()
+        exec_ctx = self.generate_new_context()
+
+        method_name = f'execute_{self.name}'
+        method = getattr(self, method_name, self.no_visit_method)
+
+        res.register(self.check_and_populate_args(method.arg_names, args, exec_ctx))
+        if res.error: return res
+
+        return_value = res.register(method(exec_ctx))
+        if res.error: return res
+        return res.success(return_value)
+    
+    def no_visit_method(self, node, context):
+        raise Exception(f'No execute_{self.name} method defined')
+
+    def copy(self):
+        copy = BuiltInFunction(self.name)
+        copy.set_context(self.context)
+        copy.set_pos(self.pos_start, self.pos_end)
+        return copy
+
+    def __repr__(self):
+        return f"<built-in function {self.name}>"
+
+
+##########ФУНКЦИИ ВСТРОЕННЫЕ#############
+    def execute_writeln(self, exec_ctx):
+        print(str(exec_ctx.symbol_table.get('value')))
+        return RTResult().success(Number.null)
+    execute_writeln.arg_names = ["value"]
+    
+    # def execute_writeln_ret(self, exec_ctx):
+    #     return RTResult().success(String(str(exec_ctx.symbol_table.get('value'))))
+    # execute_writeln.arg_names = ["value"]
+    
+    def execute_readln(self, exec_ctx):
+        text = input()
+        return RTResult().success(String(text))
+    execute_readln.arg_names = []
+    
+    def execute_readln_int(self, exec_ctx):
+        while True:
+            text = input()
+            try:
+                number = int(text)
+                break
+            except ValueError:
+                print(f"'{text}' должно быть целым числом. Попробуйте еще раз!")
+        return RTResult().success(Number(number))
+    execute_readln_int.arg_names = []
+    
+    
+    def execute_is_function(self, exec_ctx):
+        is_number = isinstance(exec_ctx.symbol_table.get("value"), BaseFunction)
+        return RTResult().success(Number.true if is_number else Number.false)
+    execute_is_function.arg_names = ["value"]
+    
+
+BuiltInFunction.writeln             = BuiltInFunction("writeln")
+BuiltInFunction.readln              = BuiltInFunction("readln")
+BuiltInFunction.readln_int          = BuiltInFunction("readln_int")
+BuiltInFunction.is_number           = BuiltInFunction("is_number")
+BuiltInFunction.is_string           = BuiltInFunction("is_string")
+BuiltInFunction.is_function         = BuiltInFunction("is_function")
 
 class Number(Value):
-	def __init__(self, value):
-		super().__init__()
-		self.value = value
+    def __init__(self, value):
+        super().__init__()
+        self.value = value
 
-	def added_to(self, other):
-		if isinstance(other, Number):
-			return Number(self.value + other.value).set_context(self.context), None
-		else:
-			return None, Value.illegal_operation(self, other)
+    def added_to(self, other):
+        if isinstance(other, Number):
+            return Number(self.value + other.value).set_context(self.context), None
+        else:
+            return None, Value.illegal_operation(self, other)
 
-	def subbed_by(self, other):
-		if isinstance(other, Number):
-			return Number(self.value - other.value).set_context(self.context), None
-		else:
-			return None, Value.illegal_operation(self, other)
+    def subbed_by(self, other):
+        if isinstance(other, Number):
+            return Number(self.value - other.value).set_context(self.context), None
+        else:
+            return None, Value.illegal_operation(self, other)
 
-	def multed_by(self, other):
-		if isinstance(other, Number):
-			return Number(self.value * other.value).set_context(self.context), None
-		else:
-			return None, Value.illegal_operation(self, other)
+    def multed_by(self, other):
+        if isinstance(other, Number):
+            return Number(self.value * other.value).set_context(self.context), None
+        else:
+            return None, Value.illegal_operation(self, other)
 
-	def dived_by(self, other):
-		if isinstance(other, Number):
-			if other.value == 0:
-				return None, RTError(
-					other.pos_start, other.pos_end,
-					'Деление на ноль ',
-					self.context
-				)
+    def dived_by(self, other):
+        if isinstance(other, Number):
+            if other.value == 0:
+                return None, RTError(
+                    other.pos_start, other.pos_end,
+                    'Деление на ноль ',
+                    self.context
+                )
 
-			return Number(self.value / other.value).set_context(self.context), None
-		else:
-			return None, Value.illegal_operation(self, other)
+            return Number(self.value / other.value).set_context(self.context), None
+        else:
+            return None, Value.illegal_operation(self, other)
 
-	def powed_by(self, other):
-		if isinstance(other, Number):
-			return Number(self.value ** other.value).set_context(self.context), None
-		else:
-			return None, Value.illegal_operation(self, other)
+    def powed_by(self, other):
+        if isinstance(other, Number):
+            return Number(self.value ** other.value).set_context(self.context), None
+        else:
+            return None, Value.illegal_operation(self, other)
 
-	def get_comparison_eq(self, other):
-		if isinstance(other, Number):
-			return Number(int(self.value == other.value)).set_context(self.context), None
-		else:
-			return None, Value.illegal_operation(self, other)
+    def get_comparison_eq(self, other):
+        if isinstance(other, Number):
+            return Number(int(self.value == other.value)).set_context(self.context), None
+        else:
+            return None, Value.illegal_operation(self, other)
 
-	def get_comparison_ne(self, other):
-		if isinstance(other, Number):
-			return Number(int(self.value != other.value)).set_context(self.context), None
-		else:
-			return None, Value.illegal_operation(self, other)
+    def get_comparison_ne(self, other):
+        if isinstance(other, Number):
+            return Number(int(self.value != other.value)).set_context(self.context), None
+        else:
+            return None, Value.illegal_operation(self, other)
 
-	def get_comparison_lt(self, other):
-		if isinstance(other, Number):
-			return Number(int(self.value < other.value)).set_context(self.context), None
-		else:
-			return None, Value.illegal_operation(self, other)
+    def get_comparison_lt(self, other):
+        if isinstance(other, Number):
+            return Number(int(self.value < other.value)).set_context(self.context), None
+        else:
+            return None, Value.illegal_operation(self, other)
 
-	def get_comparison_gt(self, other):
-		if isinstance(other, Number):
-			return Number(int(self.value > other.value)).set_context(self.context), None
-		else:
-			return None, Value.illegal_operation(self, other)
+    def get_comparison_gt(self, other):
+        if isinstance(other, Number):
+            return Number(int(self.value > other.value)).set_context(self.context), None
+        else:
+            return None, Value.illegal_operation(self, other)
 
-	def get_comparison_lte(self, other):
-		if isinstance(other, Number):
-			return Number(int(self.value <= other.value)).set_context(self.context), None
-		else:
-			return None, Value.illegal_operation(self, other)
+    def get_comparison_lte(self, other):
+        if isinstance(other, Number):
+            return Number(int(self.value <= other.value)).set_context(self.context), None
+        else:
+            return None, Value.illegal_operation(self, other)
 
-	def get_comparison_gte(self, other):
-		if isinstance(other, Number):
-			return Number(int(self.value >= other.value)).set_context(self.context), None
-		else:
-			return None, Value.illegal_operation(self, other)
+    def get_comparison_gte(self, other):
+        if isinstance(other, Number):
+            return Number(int(self.value >= other.value)).set_context(self.context), None
+        else:
+            return None, Value.illegal_operation(self, other)
 
-	def anded_by(self, other):
-		if isinstance(other, Number):
-			return Number(int(self.value and other.value)).set_context(self.context), None
-		else:
-			return None, Value.illegal_operation(self, other)
+    def anded_by(self, other):
+        if isinstance(other, Number):
+            return Number(int(self.value and other.value)).set_context(self.context), None
+        else:
+            return None, Value.illegal_operation(self, other)
 
-	def ored_by(self, other):
-		if isinstance(other, Number):
-			return Number(int(self.value or other.value)).set_context(self.context), None
-		else:
-			return None, Value.illegal_operation(self, other)
+    def ored_by(self, other):
+        if isinstance(other, Number):
+            return Number(int(self.value or other.value)).set_context(self.context), None
+        else:
+            return None, Value.illegal_operation(self, other)
 
-	def notted(self):
-		return Number(1 if self.value == 0 else 0).set_context(self.context), None
+    def notted(self):
+        return Number(1 if self.value == 0 else 0).set_context(self.context), None
 
-	def copy(self):
-		copy = Number(self.value)
-		copy.set_pos(self.pos_start, self.pos_end)
-		copy.set_context(self.context)
-		return copy
+    def copy(self):
+        copy = Number(self.value)
+        copy.set_pos(self.pos_start, self.pos_end)
+        copy.set_context(self.context)
+        return copy
 
-	def is_true(self):
-		return self.value != 0
-	
-	def __repr__(self):
-		return str(self.value)
+    def is_true(self):
+        return self.value != 0
+    
+    def __repr__(self):
+        return str(self.value)
+
+Number.null = Number(0)
+Number.true = Number(1)
+Number.false = Number(0)
 
 class String(Value):
     def __init__(self, value):
@@ -1010,6 +1326,9 @@ class String(Value):
         copy.set_context(self.context)
         return copy
     
+    def __str__(self):
+        return self.value
+    
     def __repr__(self):
         return f'"{self.value}"'
     
@@ -1025,9 +1344,9 @@ class Context:
     
     
 class SymbolTable:
-    def __init__(self):
+    def __init__(self, parent = None):
         self.symbols = {}
-        self.parent = None
+        self.parent = parent
         
     def get(self, name):
         value = self.symbols.get(name, None)
@@ -1074,7 +1393,7 @@ class Interpreter:
                 context
             ))
         
-        value = value.copy().set_pos(node.pos_start, node.pos_end)    
+        value = value.copy().set_pos(node.pos_start, node.pos_end).set_context(context)  
         return res.success(value)
     
     def visit_VarAssignNode(self, node, context):
@@ -1082,8 +1401,8 @@ class Interpreter:
         var_name = node.var_name_tok.value
         value = res.register(self.visit(node.value_node, context))
         if res.error: return res
-        
-        context.symbol_table.set(var_name,value)
+
+        context.symbol_table.set(var_name, value)
         return res.success(value)
         
     def visit_BinOpNode(self, node, context):
@@ -1212,12 +1531,53 @@ class Interpreter:
             if res.error: return res
 
         return res.success(None)
+    
+    def visit_FuncDefNode(self, node, context):
+        res = RTResult()
+
+        func_name = node.var_name_tok.value if node.var_name_tok else None
+        body_node = node.body_node
+        arg_names = [arg_name.value for arg_name in node.arg_name_toks]
+        func_value = Function(func_name, body_node, arg_names).set_context(context).set_pos(node.pos_start, node.pos_end)
+        
+        if node.var_name_tok:
+            context.symbol_table.set(func_name, func_value)
+
+        return res.success(func_value)
+    
+    def visit_CallNode(self, node, context):
+        res = RTResult()
+        args = []
+
+        value_to_call = res.register(self.visit(node.node_to_call, context))
+        if res.error: return res
+        value_to_call = value_to_call.copy().set_pos(node.pos_start, node.pos_end)
+
+        for arg_node in node.arg_nodes:
+            args.append(res.register(self.visit(arg_node, context)))
+            if res.error: return res
+
+        return_value = res.register(value_to_call.execute(args))
+        if res.error: return res
+        return_value = return_value.copy().set_pos(node.pos_start, node.pos_end).set_context(context)
+        return res.success(return_value)
+
 
 
 global_symbol_table = SymbolTable()
-global_symbol_table.set("NULL", Number(0))
-global_symbol_table.set("TRUE", Number(1))
-global_symbol_table.set("FALSE", Number(0))
+global_symbol_table.set("NULL", Number.null)
+global_symbol_table.set("TRUE", Number.true)
+global_symbol_table.set("FALSE", Number.false)
+global_symbol_table.set("writeln", BuiltInFunction.writeln)
+global_symbol_table.set("readln", BuiltInFunction.readln)
+global_symbol_table.set("int_readln", BuiltInFunction.readln_int)
+
+global_symbol_table.set("is_fun", BuiltInFunction.is_function)
+
+
+
+
+
 
 #Запуск
 def run(fn, text):
