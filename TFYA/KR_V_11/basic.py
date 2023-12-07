@@ -88,6 +88,8 @@ TT_DIV          = 'DEL'
 TT_POW          = 'POW'
 TT_LPAREN       = 'LPAREN'
 TT_RPAREN       = 'RPAREN'
+TT_LSQUARE      = 'LSQUARE'
+TT_RSQUARE      = 'RSQUARE'
 TT_EOF          = 'EOF'
 TT_IDENTIFIER   = 'IDENTIFIER'
 TT_KEYWORD      = 'KEYWORDS'
@@ -98,6 +100,7 @@ TT_LT           = 'LT'
 TT_GT           = 'GT'
 TT_LTE          = 'LTE'
 TT_GTE          = 'GTE'
+TT_NEWLINE      = 'NEWLINE'
 TT_COMMA        = 'COMMA'
 TT_ARROW        = 'ARROW'
 
@@ -117,6 +120,7 @@ KEYWORDS =[
     'then',
     'while',
     'func'
+    'end'
 ]
 
 
@@ -165,6 +169,9 @@ class Lexer:
         while self.current_char != None:
             if self.current_char in ' \t': #проверка пробелов и табуляции
                 self.advance()
+            elif self.current_char in ';\n':
+                tokens.append(Token(TT_NEWLINE, pos_start=self.pos))
+                self.advance()
             elif self.current_char in DIGITS:
                 tokens.append(self.make_number())
             elif self.current_char in LETTERS:
@@ -172,7 +179,8 @@ class Lexer:
             elif self.current_char == '"':
                 tokens.append(self.make_string())
             elif self.current_char == '+':
-                tokens.append(self.make_minus_or_arrow())
+                tokens.append(Token(TT_PLUS, pos_start=self.pos))
+                self.advance()
             elif self.current_char == '-':
                 tokens.append(Token(TT_MINUS, pos_start=self.pos))
                 self.advance()
@@ -195,6 +203,12 @@ class Lexer:
                 self.advance()
             elif self.current_char == ')':
                 tokens.append(Token(TT_RPAREN, pos_start=self.pos))
+                self.advance()
+            elif self.current_char == '[':
+                tokens.append(Token(TT_LSQUARE, pos_start=self.pos))
+                self.advance()
+            elif self.current_char == ']':
+                tokens.append(Token(TT_RSQUARE, pos_start=self.pos))
                 self.advance()
             elif self.current_char == '!':
                 tok, error = self.make_not_equals()
@@ -354,6 +368,7 @@ class NumberNode:
 
     def __repr__ (self):
         return f'{self.tok}'
+    
 class StringNode:
     def __init__(self, tok): 
         self.tok = tok
@@ -364,6 +379,13 @@ class StringNode:
 
     def __repr__ (self):
         return f'{self.tok}'
+    
+class ListNode:
+    def __init__(self, element_nodes, pos_start, pos_end):
+        self.element_nodes = element_nodes
+
+        self.pos_start = pos_start
+        self.pos_end = pos_end
     
 class VarAccessNode:
     def __init__(self, var_name_tok):
@@ -465,21 +487,31 @@ class ParseResult:
         self.error = None
         self.node = None
         self.advance_count = 0
+        self.last_registered_advance_count = 0
+        self.to_reverse_count = 0
 
     def register_advancement(self):
+        self.last_registered_advance_count = 1
         self.advance_count +=1
         
     def register(self, res):
+        self.last_registered_advance_count = res.advance_count
         self.advance_count += res.advance_count
         if res.error: self.error = res.error
         return res.node
+    
+    def try_register(self, res):
+        if res.error:
+            self.to_reverse_count = res.advance_count
+            return None
+        return self.register(res)
 
     def success(self, node):
         self.node = node;
         return self
 
     def failure(self, error):
-        if not self.error or self.advance_count == 0:
+        if not self.error or self.last_registered_advance_count == 0:
             self.error = error
         return self
     
@@ -496,19 +528,77 @@ class Parser:
 
     def advance(self):
         self.tok_idx += 1
-        if self.tok_idx < len(self.tokens):
-            self.current_tok = self.tokens[self.tok_idx]
+        self.update_current_tok()
         return self.current_tok
+
+    def reverse(self, amount = 1):
+        self.tok_idx -= amount
+        self.update_current_tok()
+        return self.current_tok
+
+    def update_current_tok(self):
+        if self.tok_idx >=0 and self.tok_idx < len(self.tokens):
+            self.current_tok = self.tokens[self.tok_idx]
     
 
     def parse(self):
-        res = self.expr()
+        res = self.statements()
         if not res.error and self.current_tok.type != TT_EOF:
             return res.failure(InvalidSyntaxError(
                 self.current_tok.pos_start, self.current_tok.pos_end,
                 "Ожидается '+', '-', '*' или '/' "
             ))
-        return res 
+        return res
+    
+    def list_expr(self):
+        res = ParseResult()
+        element_nodes = []
+        pos_start = self.current_tok.pos_start.copy()
+
+        if self.current_tok.type != TT_LSQUARE:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end,
+                f"Ожидается '['"
+            ))
+
+        res.register_advancement()
+        self.advance()
+
+        if self.current_tok.type == TT_RSQUARE:
+            res.register_advancement()
+            self.advance()
+        else:
+            element_nodes.append(res.register(self.expr()))
+            if res.error:
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end,
+                    "Ожидается ']', 'var', 'if', 'for', 'while', 'func', int, float, identifier, '+', '-', '(', '[' or 'NOT'"
+                ))
+
+            while self.current_tok.type == TT_COMMA:
+                res.register_advancement()
+                self.advance()
+
+                element_nodes.append(res.register(self.expr()))
+                if res.error: return res
+
+            if self.current_tok.type != TT_RSQUARE:
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end,
+                    f"Ожидается ',' или ']'"
+                ))
+
+            res.register_advancement()
+            self.advance()
+
+        return res.success(ListNode(
+            element_nodes,
+            pos_start,
+            self.current_tok.pos_end.copy()
+        ))
+    
+    
+    
 
     def if_expr(self):
         res = ParseResult()
@@ -739,6 +829,10 @@ class Parser:
                     self.current_tok.pos_start, self.current_tok.pos_end,
                     "Ожидается ')' "
                 ))
+        elif tok.type == TT_LSQUARE:
+            list_expr = res.register(self.list_expr())
+            if res.error: return res
+            return res.success(list_expr)
                 
         elif tok.matches(TT_KEYWORD, 'if'):
             if_expr = res.register(self.if_expr())
@@ -768,6 +862,9 @@ class Parser:
     def power(self):
         return self.bin_op(self.call, (TT_POW,), self.factor)
     
+    def arith_expr(self):
+        return self.bin_op(self.term, (TT_PLUS, TT_MINUS))
+    
     def factor(self):
         res = ParseResult()
         tok = self.current_tok 
@@ -783,9 +880,6 @@ class Parser:
         
     def term(self):
         return self.bin_op(self.factor, (TT_MUL, TT_DIV))
-    
-    def arith_expr(self):
-        return self.bin_op(self.term, (TT_PLUS, TT_MINUS))
 
     def comp_expr(self):
         res = ParseResult()
@@ -808,6 +902,44 @@ class Parser:
             ))
         
         return res.success(node)
+
+    def statements(self):
+        res = ParseResult()
+        statements = []
+        pos_start = self.current_tok.pos_start.copy()
+        
+        while self.current_tok.type == TT_NEWLINE:
+            res.register_advancement()
+            self.advance()
+            
+        statement = res.register(self.expr())
+        if res.error: return res
+        statements.append(statement)
+        
+        more_statements = True
+        
+        while True:
+            newline_count = 0
+            while self.current_tok.type == TT_NEWLINE:
+                res.register_advancement()
+                self.advance()
+                newline_count +=1
+            if newline_count == 0:
+                more_statements = False
+                
+            if not more_statements: break
+            statement = res.try_register(self.expr())
+            if not statement:
+                self.reverse(res.to_reverse_count)
+                more_statements = False
+                continue
+            statements.append(statement)
+        
+        return res.success(ListNode(
+            statements,
+            pos_start, 
+            self.current_tok.pos_end.copy()
+        ))
 
     
     def expr(self):
@@ -989,6 +1121,7 @@ class Value:
     def set_context(self, context=None):
         self.context = context
         return self
+    
 
     def added_to(self, other):
         return None, self.illegal_operation(other)
@@ -1048,6 +1181,64 @@ class Value:
             'Незаконная операция',
             self.context
         )
+
+class List(Value):
+    def __init__(self, elements):
+        super().__init__()
+        self.elements = elements
+
+    def added_to(self, other):
+        new_list = self.copy()
+        new_list.elements.append(other)
+        return new_list, None
+
+    def subbed_by(self, other):
+        if isinstance(other, Number):
+            new_list = self.copy()
+            try:
+                new_list.elements.pop(other.value)
+                return new_list, None
+            except:
+                return None, RTError(
+                    other.pos_start, other.pos_end,
+                    'Element at this index could not be removed from list because index is out of bounds',
+                    self.context
+                )
+        else:
+            return None, Value.illegal_operation(self, other)
+
+    def multed_by(self, other):
+        if isinstance(other, List):
+            new_list = self.copy()
+            new_list.elements.extend(other.elements)
+            return new_list, None
+        else:
+            return None, Value.illegal_operation(self, other)
+
+    def dived_by(self, other):
+        if isinstance(other, Number):
+            try:
+                return self.elements[other.value], None
+            except:
+                return None, RTError(
+                other.pos_start, other.pos_end,
+                'Element at this index could not be retrieved from list because index is out of bounds',
+                self.context
+            )
+        else:
+            return None, Value.illegal_operation(self, other)
+    
+    def copy(self):
+        copy = List(self.elements)
+        copy.set_pos(self.pos_start, self.pos_end)
+        copy.set_context(self.context)
+        return copy
+
+    def __str__(self):
+        return ", ".join([str(x) for x in self.elements])
+
+    def __repr__(self):
+        return f'[{", ".join([repr(x) for x in self.elements])}]'
 
 class BaseFunction(Value):
     def __init__(self, name):
@@ -1375,6 +1566,17 @@ class Interpreter:
         return RTResult().success(
             Number(node.tok.value).set_context(context).set_pos(node.pos_start, node.pos_end)
         )
+    def visit_ListNode(self, node, context):
+        res = RTResult()
+        elements = []
+
+        for element_node in node.element_nodes:
+            elements.append(res.register(self.visit(element_node, context)))
+        if res.error: return res
+
+        return res.success(
+            List(elements).set_context(context).set_pos(node.pos_start, node.pos_end)
+        )
     
     def visit_StringNode(self, node, context):
         return RTResult().success(
@@ -1451,22 +1653,22 @@ class Interpreter:
             return res.success(result.set_pos(node.pos_start, node.pos_end))
 
         
-    def visit_UnaryOpNode(self, node, context):  # Добавленный метод для унарных узлов
+    def visit_UnaryOpNode(self, node, context):
         res = RTResult()
         number = res.register(self.visit(node.node, context))
         if res.error: return res
-        
+
         error = None
-        
+
         if node.op_tok.type == TT_MINUS:
             number, error = number.multed_by(Number(-1))
         elif node.op_tok.matches(TT_KEYWORD, '!'):
             number, error = number.notted()
-            
+
         if error:
             return res.failure(error)
         else:
-            return number.set_pos(node.pos_start, node.pos_end)
+            return res.success(number.set_pos(node.pos_start, node.pos_end))
         
     def visit_IfNode(self, node, context):
         res = RTResult()
@@ -1489,6 +1691,7 @@ class Interpreter:
     
     def visit_ForNode(self, node, context):
         res = RTResult()
+        elements = []
 
         start_value = res.register(self.visit(node.start_value_node, context))
         if res.error: return res
@@ -1513,13 +1716,16 @@ class Interpreter:
             context.symbol_table.set(node.var_name_tok.value, Number(i))
             i += step_value.value
 
-            res.register(self.visit(node.body_node, context))
+            elements.append(res.register(self.visit(node.body_node, context)))
             if res.error: return res
 
-        return res.success(None)
+        return res.success(
+            List(elements).set_context(context).set_pos(node.pos_start, node.pos_end)
+        )
 
     def visit_WhileNode(self, node, context):
         res = RTResult()
+        elements = []
 
         while True:
             condition = res.register(self.visit(node.condition_node, context))
@@ -1527,10 +1733,12 @@ class Interpreter:
 
             if not condition.is_true(): break
 
-            res.register(self.visit(node.body_node, context))
+            elements.append(res.register(self.visit(node.body_node, context)))
             if res.error: return res
 
-        return res.success(None)
+        return res.success(
+            List(elements).set_context(context).set_pos(node.pos_start, node.pos_end)
+        )
     
     def visit_FuncDefNode(self, node, context):
         res = RTResult()

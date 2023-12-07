@@ -1,2 +1,3 @@
 readln
 writeln
+int_readln
