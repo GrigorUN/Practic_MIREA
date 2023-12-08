@@ -80,7 +80,7 @@ int main() {
     hashTable.insert("3", 30);
 
     // Поиск элементов по ключу
-    string keyToSearch = "3";
+    string keyToSearch = "4";
     int foundValue = hashTable.search(keyToSearch);
     if (foundValue != -1) {
         std::cout << "Значение для ключа " << keyToSearch << ": " << foundValue << std::endl;
