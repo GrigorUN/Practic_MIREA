@@ -1,0 +1,16 @@
+|LAB_4_2
+a => r0.IN0
+a => r1.IN0
+b => r2.IN0
+b => r3.IN0
+b => r4.IN0
+clock => tq[3].CLK
+clock => tq[2].CLK
+clock => tq[1].CLK
+clock => tq[0].CLK
+q[0] <= tq[0].DB_MAX_OUTPUT_PORT_TYPE
+q[1] <= tq[1].DB_MAX_OUTPUT_PORT_TYPE
+q[2] <= tq[2].DB_MAX_OUTPUT_PORT_TYPE
+q[3] <= tq[3].DB_MAX_OUTPUT_PORT_TYPE
+
+

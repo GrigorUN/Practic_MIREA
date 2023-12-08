@@ -1,5 +1,5 @@
 Fitter report for LAB_4
-Fri Dec 08 23:30:50 2023
+Sat Dec 09 00:32:37 2023
 Quartus II 64-Bit Version 13.1.0 Build 162 10/23/2013 SJ Web Edition
 
 
@@ -57,7 +57,7 @@ applicable agreement for further details.
 +------------------------------------------------------------------------+
 ; Fitter Summary                                                         ;
 +---------------------------+--------------------------------------------+
-; Fitter Status             ; Successful - Fri Dec 08 23:30:50 2023      ;
+; Fitter Status             ; Successful - Sat Dec 09 00:32:37 2023      ;
 ; Quartus II 64-Bit Version ; 13.1.0 Build 162 10/23/2013 SJ Web Edition ;
 ; Revision Name             ; LAB_4                                      ;
 ; Top-level Entity Name     ; LAB_4                                      ;
@@ -126,22 +126,22 @@ applicable agreement for further details.
 +----------------------------+-------------+
 ; Processors                 ; Number      ;
 +----------------------------+-------------+
-; Number detected on machine ; 8           ;
-; Maximum allowed            ; 8           ;
+; Number detected on machine ; 12          ;
+; Maximum allowed            ; 12          ;
 ;                            ;             ;
 ; Average used               ; 1.00        ;
-; Maximum used               ; 8           ;
+; Maximum used               ; 12          ;
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
 ;     Processor 1            ; 100.0%      ;
-;     Processors 2-8         ; < 0.1%      ;
+;     Processors 2-12        ; < 0.1%      ;
 +----------------------------+-------------+
 
 
 +--------------+
 ; Pin-Out File ;
 +--------------+
-The pin-out file can be found in C:/Users/SystemX/Documents/GitHub/Practic_MIREA/AVMS/Quartus/LAB_4/output_files/LAB_4.pin.
+The pin-out file can be found in D:/Work/Practic_MIREA/AVMS/Quartus/LAB_4/output_files/LAB_4.pin.
 
 
 +---------------------------------------------------------------+
@@ -519,7 +519,7 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +-----------------+
 ; Fitter Messages ;
 +-----------------+
-Info (20030): Parallel compilation is enabled and will use 8 of the 8 processors detected
+Info (20030): Parallel compilation is enabled and will use 12 of the 12 processors detected
 Info (119006): Selected device EPM240F100C4 for design "LAB_4"
 Info (119018): Selected Migration Device List
     Info (119019): Selected EPM570F100C4 for migration
@@ -581,20 +581,20 @@ Info (170195): Router estimated average interconnect usage is 0% of the availabl
 Info (170194): Fitter routing operations ending: elapsed time is 00:00:00
 Info (170199): The Fitter performed an Auto Fit compilation.  Optimizations were skipped to reduce compilation time.
     Info (170201): Optimizations that may affect the design's routability were skipped
-Info (11888): Total time spent on timing analysis during the Fitter is 0.33 seconds.
+Info (11888): Total time spent on timing analysis during the Fitter is 0.30 seconds.
 Info (11218): Fitter post-fit operations ending: elapsed time is 00:00:00
 Warning (169174): The Reserve All Unused Pins setting has not been specified, and will default to 'As output driving ground'.
-Info (144001): Generated suppressed messages file C:/Users/SystemX/Documents/GitHub/Practic_MIREA/AVMS/Quartus/LAB_4/output_files/LAB_4.fit.smsg
+Info (144001): Generated suppressed messages file D:/Work/Practic_MIREA/AVMS/Quartus/LAB_4/output_files/LAB_4.fit.smsg
 Info: Quartus II 64-Bit Fitter was successful. 0 errors, 4 warnings
-    Info: Peak virtual memory: 5604 megabytes
-    Info: Processing ended: Fri Dec 08 23:30:50 2023
-    Info: Elapsed time: 00:00:02
+    Info: Peak virtual memory: 5755 megabytes
+    Info: Processing ended: Sat Dec 09 00:32:37 2023
+    Info: Elapsed time: 00:00:01
     Info: Total CPU time (on all processors): 00:00:02
 
 
 +----------------------------+
 ; Fitter Suppressed Messages ;
 +----------------------------+
-The suppressed messages can be found in C:/Users/SystemX/Documents/GitHub/Practic_MIREA/AVMS/Quartus/LAB_4/output_files/LAB_4.fit.smsg.
+The suppressed messages can be found in D:/Work/Practic_MIREA/AVMS/Quartus/LAB_4/output_files/LAB_4.fit.smsg.
 
 

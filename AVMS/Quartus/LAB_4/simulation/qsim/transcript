@@ -22,18 +22,6 @@
 # Loading maxii_ver.maxii_lcell_register
 # Loading work.LAB_4_vlg_sample_tst
 # Loading work.LAB_4_vlg_check_tst
-# ERROR! Vector Mismatch for output port q[0] :: @time = 20000.000 ps
-#      Expected value = 0001
-#      Real value = 0000
-# ERROR! Vector Mismatch for output port q[1] :: @time = 30000.000 ps
-#      Expected value = 0010
-#      Real value = 0000
-# ERROR! Vector Mismatch for output port q[2] :: @time = 50000.000 ps
-#      Expected value = 0100
-#      Real value = 0000
-# ERROR! Vector Mismatch for output port q[3] :: @time = 90000.000 ps
-#      Expected value = 1000
-#      Real value = 0000
-#           4 mismatched vectors : Simulation failed !
-# ** Note: $finish    : Waveform.vwf.vt(221)
+# Simulation passed !
+# ** Note: $finish    : Waveform1.vwf.vt(205)
 #    Time: 1 us  Iteration: 0  Instance: /LAB_4_vlg_vec_tst/tb_out
