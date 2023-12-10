@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 
+using namespace std;
+
 class AVLTree {
 private:
     struct TreeNode {
@@ -47,8 +49,8 @@ AVLTree::TreeNode* AVLTree::rotateRight(TreeNode* y) {
     x->right = y;
     y->left = T2;
 
-    y->height = std::max(getHeight(y->left), getHeight(y->right)) + 1;
-    x->height = std::max(getHeight(x->left), getHeight(x->right)) + 1;
+    y->height = max(getHeight(y->left), getHeight(y->right)) + 1;
+    x->height = max(getHeight(x->left), getHeight(x->right)) + 1;
 
     return x;
 }
@@ -60,8 +62,8 @@ AVLTree::TreeNode* AVLTree::rotateLeft(TreeNode* x) {
     y->left = x;
     x->right = T2;
 
-    x->height = std::max(getHeight(x->left), getHeight(x->right)) + 1;
-    y->height = std::max(getHeight(y->left), getHeight(y->right)) + 1;
+    x->height = max(getHeight(x->left), getHeight(x->right)) + 1;
+    y->height = max(getHeight(y->left), getHeight(y->right)) + 1;
 
     return y;
 }
@@ -79,7 +81,7 @@ AVLTree::TreeNode* AVLTree::insert(TreeNode* node, int key, int fileRecord) {
         return node;
     }
 
-    node->height = 1 + std::max(getHeight(node->left), getHeight(node->right));
+    node->height = 1 + max(getHeight(node->left), getHeight(node->right));
 
     int balance = getBalance(node);
 
@@ -145,7 +147,7 @@ AVLTree::TreeNode* AVLTree::remove(TreeNode* node, int key) {
         return node;
     }
 
-    node->height = 1 + std::max(getHeight(node->left), getHeight(node->right));
+    node->height = 1 + max(getHeight(node->left), getHeight(node->right));
 
     int balance = getBalance(node);
 
@@ -173,7 +175,7 @@ AVLTree::TreeNode* AVLTree::remove(TreeNode* node, int key) {
 void AVLTree::display(TreeNode* node, int level) {
     if (node != nullptr) {
         display(node->right, level + 1);
-        std::cout << std::string(level * 4, ' ') << node->key << "(" << node->fileRecord << ")" << std::endl;
+        cout << string(level * 4, ' ') << node->key << "(" << node->fileRecord << ")" << endl;
         display(node->left, level + 1);
     }
 }
@@ -207,16 +209,16 @@ void AVLTree::display() {
 
 class FileManager {
 private:
-    std::string fileName;
+    string fileName;
 
 public:
-    FileManager(const std::string& name) : fileName(name) {}
-    void createBinaryFileFromText(const std::string& textFileName);
+    FileManager(const string& name) : fileName(name) {}
+    void createBinaryFileFromText(const string& textFileName);
     int searchRecordInFile(int key, AVLTree& avl);
     // Добавьте остальные методы управления файлом по вашему усмотрению
 };
 
-void FileManager::createBinaryFileFromText(const std::string& textFileName) {
+void FileManager::createBinaryFileFromText(const string& textFileName) {
     // Реализовать создание двоичного файла записей из текстового файла
 }
 
@@ -235,39 +237,39 @@ int main() {
 
     // Ручной ввод элементов дерева
     int n;
-    std::cout << "Введите количество элементов в дереве: ";
-    std::cin >> n;
+    cout << "Введите количество элементов в дереве: ";
+    cin >> n;
 
     for (int i = 0; i < n; ++i) {
         int key, fileRecord;
-        std::cout << "Введите ключ элемента " << i + 1 << ": ";
-        std::cin >> key;
-        std::cout << "Введите ссылку на запись в файле для элемента " << i + 1 << ": ";
-        std::cin >> fileRecord;
+        cout << "Введите ключ элемента " << i + 1 << ": ";
+        cin >> key;
+        cout << "Введите ссылку на запись в файле для элемента " << i + 1 << ": ";
+        cin >> fileRecord;
         avl.insert(key, fileRecord);
     }
 
     // Вывод дерева
-    std::cout << "Дерево:" << std::endl;
+    cout << "Дерево:" << endl;
     avl.display();
 
     // Поиск элемента
     int searchKey;
-    std::cout << "Введите ключ для поиска: ";
-    std::cin >> searchKey;
+    cout << "Введите ключ для поиска: ";
+    cin >> searchKey;
     int searchResult = -1;
     if (avl.search(searchKey, searchResult)) {
-        std::cout << "Элемент с ключом " << searchKey << " найден. Ссылка на запись в файле: " << searchResult << std::endl;
+        cout << "Элемент с ключом " << searchKey << " найден. Ссылка на запись в файле: " << searchResult << endl;
     } else {
-        std::cout << "Элемент с ключом " << searchKey << " не найден." << std::endl;
+        cout << "Элемент с ключом " << searchKey << " не найден." << endl;
     }
 
     // Удаление элемента
     int removeKey;
-    std::cout << "Введите ключ для удаления: ";
-    std::cin >> removeKey;
+    cout << "Введите ключ для удаления: ";
+    cin >> removeKey;
     avl.remove(removeKey);
-    std::cout << "Дерево после удаления элемента с ключом " << removeKey << ":" << std::endl;
+    cout << "Дерево после удаления элемента с ключом " << removeKey << ":" << endl;
     avl.display();
 
     return 0;
