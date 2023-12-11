@@ -1962,6 +1962,7 @@ global_symbol_table.set("int_readln", BuiltInFunction.readln_int)
 global_symbol_table.set("is_fun", BuiltInFunction.is_function)
 global_symbol_table.set("len", BuiltInFunction.len)
 global_symbol_table.set("run", BuiltInFunction.run)
+global_symbol_table.set("program")
 
 
 
