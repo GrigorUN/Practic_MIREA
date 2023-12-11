@@ -1752,17 +1752,28 @@ class Interpreter:
     def visit_VarAccessNode(self, node, context):
         res = RTResult()
         var_name = node.var_name_tok.value
+
+        # Добавим проверку наличия ключевого слова writeln перед переменной,
+        # если это не встроенная функция и не встроенная функция run
+        if not (context.symbol_table.get(f"writeln_{var_name}") or var_name in ["run", "readln", "readln_int", "is_function", "len", "writeln"]):
+            return res.failure(RTError(
+                node.pos_start, node.pos_end,
+                f'Невозможно использовать переменную {var_name} напрямую. Используйте writeln для вывода значения.',
+                context
+            ))
+
         value = context.symbol_table.get(var_name)
-        
+
         if not value:
             return res.failure(RTError(
                 node.pos_start, node.pos_end,
                 f'Переменная {var_name} не определена',
                 context
             ))
-        
-        value = value.copy().set_pos(node.pos_start, node.pos_end).set_context(context)  
+
+        value = value.copy().set_pos(node.pos_start, node.pos_end).set_context(context)
         return res.success(value)
+
     
     def visit_VarAssignNode(self, node, context):
         res = RTResult()
