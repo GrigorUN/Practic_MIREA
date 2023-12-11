@@ -120,7 +120,8 @@ KEYWORDS =[
     'then',
     'while',
     'func',
-    'end'
+    'end',
+    'program'
 ]
 
 
