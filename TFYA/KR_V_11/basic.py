@@ -1753,27 +1753,26 @@ class Interpreter:
         res = RTResult()
         var_name = node.var_name_tok.value
 
-        # Добавим проверку наличия ключевого слова writeln перед переменной,
-        # если это не встроенная функция и не встроенная функция run
-        if not (context.symbol_table.get(f"writeln_{var_name}") or var_name in ["run", "readln", "readln_int", "is_function", "len", "writeln"]):
+        try:
+            # Попробуем получить значение переменной
+            value = context.symbol_table.get(var_name)
+
+            # Если не получается, проверим, является ли переменная встроенной функцией
+            if value is None and not context.symbol_table.get(f"writeln_{var_name}"):
+                raise Exception()
+
+            if value:
+                value = value.copy().set_pos(node.pos_start, node.pos_end).set_context(context)
+                return res.success(value)
+            else:
+                # Если переменная является встроенной функцией, возвращаем ее
+                return res.success(BuiltInFunction(var_name).set_context(context).set_pos(node.pos_start, node.pos_end))
+        except:
             return res.failure(RTError(
                 node.pos_start, node.pos_end,
                 f'Невозможно использовать переменную {var_name} напрямую. Используйте writeln для вывода значения.',
                 context
             ))
-
-        value = context.symbol_table.get(var_name)
-
-        if not value:
-            return res.failure(RTError(
-                node.pos_start, node.pos_end,
-                f'Переменная {var_name} не определена',
-                context
-            ))
-
-        value = value.copy().set_pos(node.pos_start, node.pos_end).set_context(context)
-        return res.success(value)
-
     
     def visit_VarAssignNode(self, node, context):
         res = RTResult()
@@ -1962,7 +1961,6 @@ global_symbol_table.set("int_readln", BuiltInFunction.readln_int)
 global_symbol_table.set("is_fun", BuiltInFunction.is_function)
 global_symbol_table.set("len", BuiltInFunction.len)
 global_symbol_table.set("run", BuiltInFunction.run)
-global_symbol_table.set("program")
 
 
 
