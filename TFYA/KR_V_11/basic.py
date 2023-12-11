@@ -90,7 +90,6 @@ TT_LPAREN       = 'LPAREN'
 TT_RPAREN       = 'RPAREN'
 TT_LSQUARE      = 'LSQUARE'
 TT_RSQUARE      = 'RSQUARE'
-TT_EOF          = 'EOF'
 TT_IDENTIFIER   = 'IDENTIFIER'
 TT_KEYWORD      = 'KEYWORDS'
 TT_EQ           = 'ASSIGN'
@@ -100,9 +99,10 @@ TT_LT           = 'LT'
 TT_GT           = 'GT'
 TT_LTE          = 'LTE'
 TT_GTE          = 'GTE'
-TT_NEWLINE      = 'NEWLINE'
 TT_COMMA        = 'COMMA'
 TT_ARROW        = 'ARROW'
+TT_NEWLINE      = 'NEWLINE'
+TT_EOF          = 'EOF'
 
 
 KEYWORDS =[
@@ -119,7 +119,7 @@ KEYWORDS =[
     'step',
     'then',
     'while',
-    'func'
+    'func',
     'end'
 ]
 
@@ -553,6 +553,44 @@ class Parser:
             ))
         return res
     
+    def statements(self):
+        res = ParseResult()
+        statements = []
+        pos_start = self.current_tok.pos_start.copy()
+        
+        while self.current_tok.type == TT_NEWLINE:
+            res.register_advancement()
+            self.advance()
+            
+        statement = res.register(self.expr())
+        if res.error: return res
+        statements.append(statement)
+        
+        more_statements = True
+        
+        while True:
+            newline_count = 0
+            while self.current_tok.type == TT_NEWLINE:
+                res.register_advancement()
+                self.advance()
+                newline_count +=1
+            if newline_count == 0:
+                more_statements = False
+                
+            if not more_statements: break
+            statement = res.try_register(self.expr())
+            if not statement:
+                self.reverse(res.to_reverse_count)
+                more_statements = False
+                continue
+            statements.append(statement)
+        
+        return res.success(ListNode(
+            statements,
+            pos_start, 
+            self.current_tok.pos_end.copy()
+        ))
+    
     def list_expr(self):
         res = ParseResult()
         element_nodes = []
@@ -865,7 +903,7 @@ class Parser:
                 if res.error:
                     return res.failure(InvalidSyntaxError(
                         self.current_tok.pos_start, self.current_tok.pos_end,
-                        "Expected ')', 'VAR', 'IF', 'FOR', 'WHILE', 'FUN', int, float, identifier, '+', '-', '(' or 'NOT'"
+                        "Ожидается ')', 'VAR', 'IF', 'FOR', 'WHILE', 'FUN', int, float, identifier, '+', '-', '(' or 'NOT'"
                     ))
 
                 while self.current_tok.type == TT_COMMA:
@@ -993,43 +1031,7 @@ class Parser:
         
         return res.success(node)
 
-    def statements(self):
-        res = ParseResult()
-        statements = []
-        pos_start = self.current_tok.pos_start.copy()
-        
-        while self.current_tok.type == TT_NEWLINE:
-            res.register_advancement()
-            self.advance()
-            
-        statement = res.register(self.expr())
-        if res.error: return res
-        statements.append(statement)
-        
-        more_statements = True
-        
-        while True:
-            newline_count = 0
-            while self.current_tok.type == TT_NEWLINE:
-                res.register_advancement()
-                self.advance()
-                newline_count +=1
-            if newline_count == 0:
-                more_statements = False
-                
-            if not more_statements: break
-            statement = res.try_register(self.expr())
-            if not statement:
-                self.reverse(res.to_reverse_count)
-                more_statements = False
-                continue
-            statements.append(statement)
-        
-        return res.success(ListNode(
-            statements,
-            pos_start, 
-            self.current_tok.pos_end.copy()
-        ))
+    
 
     
     def expr(self):
@@ -1490,6 +1492,52 @@ class BuiltInFunction(BaseFunction):
         return RTResult().success(Number.true if is_number else Number.false)
     execute_is_function.arg_names = ["value"]
     
+    def execute_len(self, exec_ctx):
+        list_ = exec_ctx.symbol_table.get("list")
+        
+        if not isinstance(list_, List):
+            return RTResult().failure(RTError(
+                self.pos_start, self.pos_end,
+                "list должен быть списком",
+                exec_ctx
+            ))
+            
+        return RTResult().success(Number(len(list_.elements)))
+    
+    def execute_run(self, exec_ctx):
+        dn = exec_ctx.symbol_table.get("dn")
+        
+        if not isinstance(dn, String):
+            return RTResult().failure(RTError(
+                self.pos_start, self.pos_end,
+                "dn должен быть строкой",
+                exec_ctx
+            ))
+            
+        dn = dn.value
+        
+        try:
+            with open(dn, "r") as f:
+                script = f.read()
+        except Exception as e:
+            return RTResult().failure(RTError(
+                self.pos_start, self.pos_end,
+                f"Не удалось открыть файл: \"{dn}\"\n" +str(e),
+                exec_ctx
+            ))
+        
+        _, error = run(dn,script)
+        
+        if error:
+            return RTResult().failure(RTError(
+                self.pos_start, self.pos_end,
+                f"Не удалось запустить файл: \"{dn}\"\n" + str(error.as_string()),
+                exec_ctx
+            ))
+        
+        return RTResult().success(Number.null)
+    execute_run.arg_names = ["dn"]
+    
 
 BuiltInFunction.writeln             = BuiltInFunction("writeln")
 BuiltInFunction.readln              = BuiltInFunction("readln")
@@ -1497,6 +1545,8 @@ BuiltInFunction.readln_int          = BuiltInFunction("readln_int")
 BuiltInFunction.is_number           = BuiltInFunction("is_number")
 BuiltInFunction.is_string           = BuiltInFunction("is_string")
 BuiltInFunction.is_function         = BuiltInFunction("is_function")
+BuiltInFunction.len                 = BuiltInFunction("len")
+BuiltInFunction.run                 = BuiltInFunction("run")
 
 class Number(Value):
     def __init__(self, value):
@@ -1898,8 +1948,9 @@ global_symbol_table.set("FALSE", Number.false)
 global_symbol_table.set("writeln", BuiltInFunction.writeln)
 global_symbol_table.set("readln", BuiltInFunction.readln)
 global_symbol_table.set("int_readln", BuiltInFunction.readln_int)
-
 global_symbol_table.set("is_fun", BuiltInFunction.is_function)
+global_symbol_table.set("len", BuiltInFunction.len)
+global_symbol_table.set("run", BuiltInFunction.run)
 
 
 

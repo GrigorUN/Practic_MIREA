@@ -1,0 +1,6 @@
+writeln("sa")
+for i:=0 to 5 then 
+    writeln("---->") 
+    writeln("<----")
+end
+writeln("wwwwwww")
