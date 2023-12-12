@@ -1,11 +1,8 @@
-program
-var s: string
-begin
-    s := "Hello"
-    writeln("sa")
-    for i:=0 to 5 then 
-        writeln("---->") 
-        writeln("<----")
-    end
-    writeln(s)
+
+
+writeln("sa")
+for i:=0 to 5 then 
+    writeln("---->") 
+    writeln("<----")
 end
+writeln("sadasd")
