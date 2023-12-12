@@ -1,0 +1,8 @@
+program
+    var a1 : intee,
+b1 : bool;
+begin
+    a1 := 1;
+    b1 := false
+end
+@

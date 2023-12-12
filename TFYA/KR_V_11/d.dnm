@@ -1,6 +1,5 @@
-
-
-writeln("sa")
+var s:="kkk"
+writeln(s)
 for i:=0 to 5 then 
     writeln("---->") 
     writeln("<----")
