@@ -1,5 +1,5 @@
 program
-    var a1 : intee,
+    var a1 : int,
 b1 : bool;
 begin
     a1 := 1;
