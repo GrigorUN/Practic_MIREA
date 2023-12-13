@@ -1,0 +1,20 @@
+program example;
+var
+  a, b: integer;
+begin
+  a := 5;
+  b := 10;
+
+  if (a > b) then
+    writeln("a больше b")
+  else
+    writeln("a не больше b");
+
+  while !(a = b) do
+  begin
+    writeln("a не равно b");
+    a := a + 1;
+  end;
+
+  writeln("Конец программы");
+end.

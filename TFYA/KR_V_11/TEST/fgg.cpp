@@ -6,58 +6,52 @@ using namespace std;
 // Типы лексем
 enum lex_type
 {
-    LEX_NULL,       // 0
-    // КЛЮЧЕВЫЕ СЛОВА
-    LEX_AND,        // 1
-    LEX_BEGIN,      // 2
-    LEX_BOOL,       // 3
-    LEX_DO,         // 4
-    LEX_ELSE,       // 5
-    LEX_END,        // 6
-    LEX_IF,         // 7
-    LEX_FALSE,      // 8
-    LEX_INT,        // 9
-    LEX_NOT,        // 10
-    LEX_OR,         // 11
-    LEX_PROGRAM,    // 12
-    LEX_READ,       // 13
-    LEX_THEN,       // 14
-    LEX_TRUE,       // 15
-    LEX_VAR,        // 16
-    LEX_WHILE,      // 17
-    LEX_WRITE,      // 18
-    // МАРКЕР КОНЦА ТЕКСТА ПРОГРАММЫ
-    LEX_FIN,        // 19
-    // ОПЕРАТОРЫ И РАЗДЕЛИТЕЛИ
-    LEX_SEMICOLON,  // 20
-    LEX_COMMA,      // 21
-    LEX_COLON,      // 22
-    LEX_ASSIGN,     // 23
-    LEX_LPAREN,     // 24
-    LEX_RPAREN,     // 25
-    LEX_EQ,         // 26
-    LEX_LSS,        // 27
-    LEX_GTR,        // 28
-    LEX_PLUS,       // 29
-    LEX_MINUS,      // 30
-    LEX_TIMES,      // 31
-    LEX_SLASH,      // 32
-    LEX_LEQ,        // 33
-    LEX_NEQ,        // 34
-    LEX_GEQ,        // 35
-    // ЧИСЛОВАЯ КОНСТАНТА
-    LEX_NUM,        // 36
-    // ИДЕНТИФИКАТОР
-    LEX_ID          // 37
+    LEX_NULL,         
+    LEX_AND,            
+    LEX_BEGIN,          
+    LEX_BOOL,           
+    LEX_DO,             
+    LEX_ELSE,           
+    LEX_END,            
+    LEX_IF,             
+    LEX_FALSE,          
+    LEX_INT,            
+    LEX_NOT,        
+    LEX_OR,         
+    LEX_PROGRAM,    
+    LEX_READ,       
+    LEX_THEN,       
+    LEX_TRUE,       
+    LEX_VAR,        
+    LEX_WHILE,      
+    LEX_WRITE,      
+    LEX_FIN,        
+    LEX_SEMICOLON,  
+    LEX_COMMA,      
+    LEX_COLON,      
+    LEX_ASSIGN,     
+    LEX_LPAREN,     
+    LEX_RPAREN,     
+    LEX_EQ,         
+    LEX_LSS,        
+    LEX_GTR,        
+    LEX_PLUS,       
+    LEX_MINUS,      
+    LEX_TIMES,      
+    LEX_SLASH,      
+    LEX_LEQ,        
+    LEX_NEQ,        
+    LEX_GEQ,        
+    LEX_NUM,        
+    LEX_ID          
 };
 
-// Класс "Лексема"
 class Lex
 {
     lex_type type;
     int value;
 
-public:
+    public:
     Lex(lex_type t = LEX_NULL, int v = 0)
     {
         type = t;

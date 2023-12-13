@@ -1,0 +1,54 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    ADD_OP
+    MUL_OP
+    REL_OP
+    UNARY_OP
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> PROGRAM VAR description BEGIN statement END DOT
+Rule 2     description -> IDENTIFIER COMMA description
+Rule 3     description -> IDENTIFIER COLON TYPE SEMICOLON
+Rule 4     statement -> compound
+Rule 5     statement -> assignment
+Rule 6     statement -> conditional
+Rule 7     statement -> loop_fixed
+Rule 8     statement -> loop_conditional
+Rule 9     statement -> input
+Rule 10    statement -> output
+
+Terminals, with rules where they appear
+
+ADD_OP               : 
+IDENTIFIER           : 2 3
+MUL_OP               : 
+REL_OP               : 
+TYPE                 : 3
+UNARY_OP             : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+BEGIN                : 1
+COLON                : 3
+COMMA                : 2
+DOT                  : 1
+END                  : 1
+PROGRAM              : 1
+SEMICOLON            : 3
+VAR                  : 1
+assignment           : 5
+compound             : 4
+conditional          : 6
+description          : 1 2
+input                : 9
+loop_conditional     : 8
+loop_fixed           : 7
+output               : 10
+program              : 0
+statement            : 1
+
