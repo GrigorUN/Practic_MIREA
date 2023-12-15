@@ -1,0 +1,9 @@
+program
+var a,b: %;
+begin
+a:=10;
+b:=12;
+writeln(a);
+writeln(b);
+end
+@
