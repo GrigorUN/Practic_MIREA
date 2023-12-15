@@ -8,13 +8,13 @@ class LexicalAnalyzer:
         self.states = States("H", "COMM", "ID", "ERR", "NM", "DLM")
         self.token_names = Tokens("KWORD", "IDENT", "NUM", "OPER", "DELIM", "NUM2", "NUM8", "NUM10", "NUM16", "REAL",
                                   "TYPE", "ARITH")
-        self.keywords = {"or": 1, "and": 2, "not": 3, "program": 4, "var": 5, "begin": 6, "end": 7, "as": 8, "if": 9,
-                         "then": 10, "else": 11, "for": 12, "to": 13, "do": 14, "while": 15, "read": 16, "write": 17,
-                         "true": 18, "false": 19}
+        self.keywords = {"||": 1, "&&": 2, "!": 3, "program": 4, "var": 5, "begin": 6, "end": 7, ":=":8, "if": 9,
+                         "then": 10, "else": 11, "for": 12, "to": 13, "step": 14, "while": 15, "readln": 16, "writeln": 17,
+                         "true": 18, "false": 19, "next": 20, "step":21}
         self.types = {"%", "!", "$"}  # +
         self.arith = {"+", '-', '*', '/'}  # +
-        self.operators = {"<>", "=", "<", "<=", ">", ">="}  # +
-        self.delimiters = {";", ",", ":", "[", "]", "(", ")"}
+        self.operators = {"!=", "==", "<", "<=", ">", ">="}  # +
+        self.delimiters = {";", ",", "[", "]", "(", ")", ":"}
         self.fgetc = fgetc_generator(filename)
         self.current = Current(state=self.states.H)
         self.error = Error(filename)

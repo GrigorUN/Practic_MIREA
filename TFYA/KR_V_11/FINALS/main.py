@@ -1,4 +1,3 @@
-# main.py
 from LexicalAnalizer import LexicalAnalyzer
 from SyntacticalAnalyzer import SyntacticalAnalyzer
 from SemanticalAnalyzer import IdentifiersTable
@@ -27,5 +26,5 @@ def analyze_program(path_to_program, print_info=True):
 
 if __name__ == "__main__":
     PRINT_INFO = True
-    PATH_TO_PROGRAM = "input.poullang"
+    PATH_TO_PROGRAM = "d.dnm"
     analyze_program(PATH_TO_PROGRAM, PRINT_INFO)
