@@ -1,15 +1,5 @@
 program 
-var %;
-begin
-for 
-while 
-step 
-next 
-if 
-else 
-() 
-:
-/
-
-writeln;writeln ;
+var int: %
+int := 10;
+writeln b;
 end@

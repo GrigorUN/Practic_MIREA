@@ -1,16 +1,15 @@
 import re
 from utils import *
 
-
 class LexicalAnalyzer:
     def __init__(self, filename: str, identifiersTable):
         self.identifiersTable = identifiersTable
         self.states = States("H", "COMM", "ID", "ERR", "NM", "DLM")
         self.token_names = Tokens("KWORD", "IDENT", "NUM", "OPER", "DELIM", "NUM2", "NUM8", "NUM10", "NUM16", "REAL",
                                   "TYPE", "ARITH")
-        self.keywords = {"||": 1, "&&": 2, "!": 3, "program": 4, "var": 5, "begin": 6, "end": 7, ":=":8, "if": 9,
+        self.keywords = {"||": 1, "&&": 2, "!": 3, "program": 4, "var": 5, "begin": 6, "end": 7, ":=": 8, "if": 9,
                          "then": 10, "else": 11, "for": 12, "to": 13, "step": 14, "while": 15, "readln": 16, "writeln": 17,
-                         "true": 18, "false": 19, "next": 20, "step":21}
+                         "true": 18, "false": 19, "next": 20, "step": 21}
         self.types = {"%", "!", "$"}  # +
         self.arith = {"+", '-', '*', '/'}  # +
         self.operators = {"!=", "==", "<", "<=", ">", ">="}  # +
@@ -64,8 +63,34 @@ class LexicalAnalyzer:
 
     def dlm_state_processing(self):
         if self.current.symbol in self.delimiters | self.arith | self.types:
-            if self.current.symbol in self.delimiters:
-                self.add_token(self.token_names.DELIM, self.current.symbol)
+            if self.current.symbol == ":":
+                temp_symbol = self.current.symbol
+                if not self.current.eof_state:
+                    self.current.re_assign(*next(self.fgetc))
+                    if temp_symbol + self.current.symbol == ":=":
+                        self.add_token(self.token_names.OPER, ":=")
+                        if not self.current.eof_state:
+                            self.current.re_assign(*next(self.fgetc))
+                        self.current.state = self.states.H
+                        return
+                    else:
+                        self.add_token(self.token_names.DELIM, temp_symbol)
+                else:
+                    self.add_token(self.token_names.DELIM, temp_symbol)
+            elif self.current.symbol == "!":
+                temp_symbol = self.current.symbol
+                if not self.current.eof_state:
+                    self.current.re_assign(*next(self.fgetc))
+                    if temp_symbol + self.current.symbol == "!=":
+                        self.add_token(self.token_names.OPER, "!=")
+                        if not self.current.eof_state:
+                            self.current.re_assign(*next(self.fgetc))
+                        self.current.state = self.states.H
+                        return
+                    else:
+                        self.add_token(self.token_names.OPER, temp_symbol)
+                else:
+                    self.add_token(self.token_names.OPER, temp_symbol)
             elif self.current.symbol in self.types:
                 self.add_token(self.token_names.TYPE, self.current.symbol)
             else:
@@ -85,6 +110,7 @@ class LexicalAnalyzer:
             else:
                 self.add_token(self.token_names.OPER, self.current.symbol)
         self.current.state = self.states.H
+
 
     def err_state_processing(self):
         raise Exception(
@@ -123,7 +149,6 @@ class LexicalAnalyzer:
             self.current.state = self.states.H
         else:
             self.error.symbol = buf
-
             self.current.state = self.states.ERR
 
     def is_num(self, digit):

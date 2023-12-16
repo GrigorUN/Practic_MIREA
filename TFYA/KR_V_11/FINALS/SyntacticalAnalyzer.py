@@ -9,7 +9,7 @@ class SyntacticalAnalyzer:
         self.factor_operations = {"*", "/", "&&"}
         self.keywords = {"||": 1, "&&": 2, "!": 3, "program": 4, "var": 5, "begin": 6, "end": 7, ":=": 8, "if": 9,
                          "then": 10, "else": 11, "for": 12, "to": 13, "step": 14, "while": 15, "readln": 16, "writeln": 17,
-                         "true": 18, "false": 19, "next": 20, "step":21, "=":22, ":":23}
+                         "true": 18, "false": 19, "next": 20, "=":21, ":":22}
 
     def equal_token_value(self, word):
         if self.current_lex.token_value != word:
@@ -175,8 +175,7 @@ def FIXED_CYCLE_OPERATOR(self):
 
     def ASSIGNMENT_OPERATOR(self):
         self.IDENTIFIER()
-        self.equal_token_value(":")
-        self.equal_token_value("=")# Заменяем "as" на ":="
+        self.equal_token_value(":=")  # Используем ":=" вместо "="
         self.EXPRESSION()
 
 
@@ -199,15 +198,16 @@ def FIXED_CYCLE_OPERATOR(self):
             self.FACTOR()
 
     def FACTOR(self):
-        if self.current_lex.token_name in {"IDENT", "NUM", "NUM2", "NUM8", "NUM10", "NUM16",
-                                           "REAL"}:  # <идентификатор> | <число>
+        if self.current_lex.token_name in {"IDENT", "NUM", "NUM2", "NUM8", "NUM10", "NUM16", "REAL"}:
             self.current_lex = next(self.lex_get)
-        elif self.current_lex.token_value in {"true", "false"}:  # <логическая_константа>
+        elif self.current_lex.token_value in {"true", "false"}:
             self.current_lex = next(self.lex_get)
-        elif self.current_lex.token_value == "!":  # <унарная_операция> <множитель>
+        elif self.current_lex.token_value == "!":
             self.equal_token_value("!")
             self.FACTOR()
-        else:  # «(»<выражение>«)»
-            self.equal_token_value("(")
+        elif self.current_lex.token_value == "(":
+            self.current_lex = next(self.lex_get)
             self.EXPRESSION()
             self.equal_token_value(")")
+        else:
+            self.throw_error()
