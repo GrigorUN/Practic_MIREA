@@ -1,7 +1,17 @@
-||  &&  !  program  var begin end := if 
-                         then else  for  to  step  while  readln  writeln 
-                         true  false  next  step
+program 
+var int1, int2, int3: %;
+bool1,bool2, bool3: !;
+begin
 
-<=
-!=
-@
+int2 := 22;
+if (int2<50 && int2>1)
+    int2 := 50
+else
+    int2 := 100;
+
+if (int1 == 50)
+    int2 := 100;
+readln int2, int3;
+writeln int2, int3+4*10>20
+
+end@

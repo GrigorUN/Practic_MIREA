@@ -1,5 +1,5 @@
 from LexicalAnalizer import LexicalAnalyzer
-from utils import Tokens, Token
+from LexicalAnalizer import Tokens, Token
 
 def main():
     filename = "d.dnm"  # Замените на имя вашего входного файла

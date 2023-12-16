@@ -9,7 +9,7 @@ begin
 int1 as 22
 ;
 {Условный оператор}
-if int1<50
+if int1<50 or int1>1
     then int1 as 50
 else
     int1 as 100

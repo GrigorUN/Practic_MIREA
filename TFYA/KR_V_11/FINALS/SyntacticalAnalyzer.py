@@ -4,13 +4,13 @@ class SyntacticalAnalyzer:
         self.lex_get = self.lexeme_generator(lexeme_table)
         self.id_stack = []
         self.current_lex = next(self.lex_get)
-        self.relation_operations = {"!=", "==", "<", "<=", ">", ">="}
+        self.relation_operations = {"!=", "==", "<", "<=", ">", ">=", '='}
         self.term_operations = {"+", "-", "||"}
         self.factor_operations = {"*", "/", "&&"}
         self.keywords = {"||": 1, "&&": 2, "!": 3, "program": 4, "var": 5, "begin": 6, "end": 7, ":=": 8, "if": 9,
                          "then": 10, "else": 11, "for": 12, "to": 13, "step": 14, "while": 15, "readln": 16, "writeln": 17,
-                         "true": 18, "false": 19, "next": 20, "=":21, ":":22}
-
+                         "true": 18, "false": 19, "next": 20, "step": 21}
+        
     def equal_token_value(self, word):
         if self.current_lex.token_value != word:
             self.throw_error()

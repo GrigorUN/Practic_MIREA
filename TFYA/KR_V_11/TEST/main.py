@@ -27,5 +27,5 @@ def analyze_program(path_to_program, print_info=True):
 
 if __name__ == "__main__":
     PRINT_INFO = True
-    PATH_TO_PROGRAM = "fourth_program.poullang"
+    PATH_TO_PROGRAM = "first_program.poullang"
     analyze_program(PATH_TO_PROGRAM, PRINT_INFO)
