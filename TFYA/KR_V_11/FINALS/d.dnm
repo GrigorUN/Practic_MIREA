@@ -1,15 +1,7 @@
-program 
-var b: % 
-f:!
-s:$
-if 
-readln 
-for 
-else 
-begin 
-!= 
+||  &&  !  program  var begin end := if 
+                         then else  for  to  step  while  readln  writeln 
+                         true  false  next  step
+
 <=
-==
-b := 10;
-writeln b;
-end@
+!=
+@

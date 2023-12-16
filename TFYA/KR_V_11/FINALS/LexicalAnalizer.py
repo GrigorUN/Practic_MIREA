@@ -39,9 +39,9 @@ class LexicalAnalyzer:
     def h_state_processing(self):
         while not self.current.eof_state and self.current.symbol in {" ", "\n", "\t"}:
             self.current.re_assign(*next(self.fgetc))
-        if self.current.symbol.isalpha():  # переход в состояние идентификаторов
+        if self.current.symbol.isalpha() or self.current.symbol == "&" or self.current.symbol == "|":
             self.current.state = self.states.ID
-        elif self.current.symbol in set(list("0123456789.")):  # переход в состояние чисел
+        elif self.current.symbol in set(list("0123456789.")):
             self.current.state = self.states.NM
         elif self.current.symbol in (self.delimiters | self.operators | self.types | self.arith):
             self.current.state = self.states.DLM
@@ -91,11 +91,11 @@ class LexicalAnalyzer:
                         self.add_token(self.token_names.OPER, temp_symbol)
                 else:
                     self.add_token(self.token_names.OPER, temp_symbol)
-            elif self.current.symbol == "=":
+            elif self.current.symbol in self.operators:
                 temp_symbol = self.current.symbol
                 if not self.current.eof_state:
                     self.current.re_assign(*next(self.fgetc))
-                    if self.current.symbol == "=":
+                    if temp_symbol + self.current.symbol == "==":
                         self.add_token(self.token_names.OPER, "==")
                         if not self.current.eof_state:
                             self.current.re_assign(*next(self.fgetc))
@@ -105,7 +105,6 @@ class LexicalAnalyzer:
                         self.add_token(self.token_names.OPER, temp_symbol)
                 else:
                     self.add_token(self.token_names.OPER, temp_symbol)
-
             elif self.current.symbol in self.types:
                 self.add_token(self.token_names.TYPE, self.current.symbol)
             else:
@@ -127,16 +126,17 @@ class LexicalAnalyzer:
         self.current.state = self.states.H
 
 
+
     def err_state_processing(self):
         raise Exception(
             f"\nUnknown: '{self.error.symbol}' in file {self.error.filename} \nline: {self.current.line_number} and pos: {self.current.pos_number}")
 
-    def id_state_processing(self):  
+    def id_state_processing(self):
         buf = [self.current.symbol]
         if not self.current.eof_state:
             self.current.re_assign(*next(self.fgetc))
         while not self.current.eof_state and (
-                self.current.symbol.isalpha() or self.current.symbol.isdigit()):  
+                self.current.symbol.isalpha() or self.current.symbol.isdigit() or self.current.symbol == "&" or self.current.symbol == "|"):
             buf.append(self.current.symbol)
             self.current.re_assign(*next(self.fgetc))
         buf = ''.join(buf)
@@ -145,7 +145,7 @@ class LexicalAnalyzer:
         else:
             self.add_token(self.token_names.IDENT, buf)
             if buf not in self.keywords:
-                self.identifiersTable.add(buf)  # Добавить идентификатор в таблицу
+                self.identifiersTable.add(buf)
         self.current.state = self.states.H
 
 
