@@ -116,12 +116,12 @@ class LexicalAnalyzer:
         raise Exception(
             f"\nUnknown: '{self.error.symbol}' in file {self.error.filename} \nline: {self.current.line_number} and pos: {self.current.pos_number}")
 
-    def id_state_processing(self):  # Completed
+    def id_state_processing(self):  
         buf = [self.current.symbol]
         if not self.current.eof_state:
             self.current.re_assign(*next(self.fgetc))
         while not self.current.eof_state and (
-                self.current.symbol.isalpha() or self.current.symbol.isdigit()):  # ([a-zA-Z]|[0-9])+
+                self.current.symbol.isalpha() or self.current.symbol.isdigit()):  
             buf.append(self.current.symbol)
             self.current.re_assign(*next(self.fgetc))
         buf = ''.join(buf)
@@ -130,8 +130,9 @@ class LexicalAnalyzer:
         else:
             self.add_token(self.token_names.IDENT, buf)
             if buf not in self.keywords:
-                self.identifiersTable.put(buf)
+                self.identifiersTable.add(buf)  # Добавить идентификатор в таблицу
         self.current.state = self.states.H
+
 
     def nm_state_processing(self):
         buf = []

@@ -1,5 +1,15 @@
 program 
-var int: %
-int := 10;
+var b: % 
+f:!
+s:$
+if 
+readln 
+for 
+else 
+begin 
+!= 
+== 
+<=
+b := 10;
 writeln b;
 end@
