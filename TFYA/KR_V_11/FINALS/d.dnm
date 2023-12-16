@@ -8,7 +8,6 @@ for
 else 
 begin 
 != 
-== 
 <=
 b := 10;
 writeln b;

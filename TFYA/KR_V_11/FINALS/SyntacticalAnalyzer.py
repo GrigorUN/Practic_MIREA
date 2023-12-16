@@ -124,32 +124,32 @@ class SyntacticalAnalyzer:
 
 
 
-def FIXED_CYCLE_OPERATOR(self):
-    self.equal_token_value("for")
-    self.ASSIGNMENT_OPERATOR()
+    def FIXED_CYCLE_OPERATOR(self):
+        self.equal_token_value("for")
+        self.ASSIGNMENT_OPERATOR()
 
-    if self.current_lex.token_value == "to":
-        self.current_lex = next(self.lex_get)
-        end_expression = self.EXPRESSION()
-
-        # Обработка необязательной части "step"
-        step_expression = None
-        if self.current_lex.token_value == "step":
+        if self.current_lex.token_value == "to":
             self.current_lex = next(self.lex_get)
-            step_expression = self.EXPRESSION()
+            end_expression = self.EXPRESSION()
 
-        self.OPERATOR()
+            # Обработка необязательной части "step"
+            step_expression = None
+            if self.current_lex.token_value == "step":
+                self.current_lex = next(self.lex_get)
+                step_expression = self.EXPRESSION()
 
-        # Вставка логики для обработки "next"
-        if self.current_lex.token_value == "next":
-            self.current_lex = next(self.lex_get)
+            self.OPERATOR()
+
+            # Вставка логики для обработки "next"
+            if self.current_lex.token_value == "next":
+                self.current_lex = next(self.lex_get)
+            else:
+                self.throw_error()
+
+            # Теперь вы можете использовать переменные end_expression и step_expression
+            # для обработки логики цикла
         else:
             self.throw_error()
-
-        # Теперь вы можете использовать переменные end_expression и step_expression
-        # для обработки логики цикла
-    else:
-        self.throw_error()
 
 
     def CONDITIONAL_CYCLE_OPERATOR(self):
