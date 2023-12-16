@@ -1,6 +1,6 @@
 program 
 var int1, int2, int3: %;
-bool1,bool2, bool3: !;
+bool1,bool2, bool3: $;
 begin
 
 int2 := 22;
