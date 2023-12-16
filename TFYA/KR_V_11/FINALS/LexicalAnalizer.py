@@ -12,7 +12,7 @@ class LexicalAnalyzer:
                          "true": 18, "false": 19, "next": 20, "step": 21}
         self.types = {"%", "!", "$"}  # +
         self.arith = {"+", '-', '*', '/'}  # +
-        self.operators = {"!=", "==", "<", "<=", ">", ">="}  # +
+        self.operators = {"!=", "==", "<", "<=", ">", ">=", '='}  # +
         self.delimiters = {";", ",", "[", "]", "(", ")", ":"}
         self.fgetc = fgetc_generator(filename)
         self.current = Current(state=self.states.H)
@@ -91,6 +91,21 @@ class LexicalAnalyzer:
                         self.add_token(self.token_names.OPER, temp_symbol)
                 else:
                     self.add_token(self.token_names.OPER, temp_symbol)
+            elif self.current.symbol == "=":
+                temp_symbol = self.current.symbol
+                if not self.current.eof_state:
+                    self.current.re_assign(*next(self.fgetc))
+                    if self.current.symbol == "=":
+                        self.add_token(self.token_names.OPER, "==")
+                        if not self.current.eof_state:
+                            self.current.re_assign(*next(self.fgetc))
+                        self.current.state = self.states.H
+                        return
+                    else:
+                        self.add_token(self.token_names.OPER, temp_symbol)
+                else:
+                    self.add_token(self.token_names.OPER, temp_symbol)
+
             elif self.current.symbol in self.types:
                 self.add_token(self.token_names.TYPE, self.current.symbol)
             else:
