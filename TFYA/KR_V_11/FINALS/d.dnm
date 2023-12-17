@@ -13,4 +13,5 @@ if (int1 == 50)
     int2 := 100;
 readln int2, int3;
 writeln int2, int3+4*10>20
+
 end@
