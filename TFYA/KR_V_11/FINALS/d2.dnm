@@ -1,0 +1,12 @@
+program 
+var a, b, c: %;
+b1, b2, b3: $;
+r1, r2, r3: !
+;
+
+begin
+b1 := true;
+b2 := true;
+r1 := 2.1e+1;
+
+end@
