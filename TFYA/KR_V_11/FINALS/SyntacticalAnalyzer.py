@@ -7,9 +7,9 @@ class SyntacticalAnalyzer:
         self.relation_operations = {"!=", "==", "<", "<=", ">", ">=", '='}
         self.term_operations = {"+", "-", "||"}
         self.factor_operations = {"*", "/", "&&"}
-        self.keywords = {"||": 1, "&&": 2, "!": 3, "program": 4, "var": 5, "begin": 6, "end": 7, ":=": 8, "if": 9,
-                         "then": 10, "else": 11, "for": 12, "to": 13, "step": 14, "while": 15, "readln": 16, "writeln": 17,
-                         "true": 18, "false": 19, "next": 20, "step": 21}
+        self.keywords = {"||": 1, "&&": 2, "program": 3, "var": 4, "begin": 5, "end": 6, ":=": 7, "if": 8,
+                         "then": 9, "else": 10, "for": 11, "to": 12, "step": 13, "while": 14, "readln": 15, "writeln": 16,
+                         "true": 17, "false": 18, "next": 19}
         
     def equal_token_value(self, word):
         if self.current_lex.token_value != word:

@@ -1,0 +1,17 @@
+program
+var a: $;
+    d: %;
+begin
+    a := false;
+    for d := 1 to d <= 100
+    begin
+        d := d + 9
+    end
+    next;
+ 
+    writeln a;
+
+    a := true;
+
+    writeln a
+end@
