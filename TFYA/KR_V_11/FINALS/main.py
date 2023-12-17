@@ -1,6 +1,6 @@
-from TFYA.KR_V_11.FINALS.Lexer import LexicalAnalyzer
-from TFYA.KR_V_11.FINALS.Sintaksis import SyntacticalAnalyzer
-from TFYA.KR_V_11.FINALS.Semantika import IdentifiersTable
+from Lexer import LexicalAnalyzer
+from Sintaksis import SyntacticalAnalyzer
+from Semantika import IdentifiersTable
 
 def analyze_program(path_to_program, print_info=True):
     identifiers_table = IdentifiersTable()

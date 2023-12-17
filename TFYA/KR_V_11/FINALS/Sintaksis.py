@@ -51,6 +51,7 @@ class SyntacticalAnalyzer:
                 self.current_lex = next(self.lex_get)
                 self.IDENTIFIER(from_description=True)
             
+            # Теперь ожидаем двоеточие и тип, но без точки с запятой
             self.equal_token_value(":")
             self.TYPE(from_description=True)
             
@@ -150,6 +151,8 @@ class SyntacticalAnalyzer:
             else:
                 self.throw_error()
 
+            # Теперь вы можете использовать переменные end_expression и step_expression
+            # для обработки логики цикла
         else:
             self.throw_error()
 
