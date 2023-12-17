@@ -1,8 +1,7 @@
 program 
 var int1, int2, int3: %;
-bool1,bool2, bool3: !;
-begin
 
+begin
 int2 := 22;
 if (int2<50 && int2>1)
     int2 := 50

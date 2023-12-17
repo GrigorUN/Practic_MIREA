@@ -50,10 +50,15 @@ class SyntacticalAnalyzer:
             while self.current_lex.token_value == ",":
                 self.current_lex = next(self.lex_get)
                 self.IDENTIFIER(from_description=True)
+            
+            # Теперь ожидаем двоеточие и тип, но без точки с запятой
             self.equal_token_value(":")
-
             self.TYPE(from_description=True)
-            self.equal_token_value(";")
+            
+            # Ожидаем только если не следует begin
+            if self.current_lex.token_value != "begin":
+                self.equal_token_value(";")
+
 
     def IDENTIFIER(self, from_description=False):
         if from_description:
