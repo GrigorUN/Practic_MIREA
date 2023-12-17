@@ -1,4 +1,4 @@
-from LexicalAnalizer import LexicalAnalyzer, Tokens, Token
+from TFYA.KR_V_11.FINALS.Lexer import LexicalAnalyzer, Tokens, Token
 
 def main():
     filename = "d.dnm"  # Замените на имя вашего входного файла

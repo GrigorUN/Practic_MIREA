@@ -1,6 +1,6 @@
-from LexicalAnalizer import LexicalAnalyzer
-from SyntacticalAnalyzer import SyntacticalAnalyzer
-from SemanticalAnalyzer import IdentifiersTable
+from TFYA.KR_V_11.FINALS.Lexer import LexicalAnalyzer
+from TFYA.KR_V_11.FINALS.Sintaksis import SyntacticalAnalyzer
+from TFYA.KR_V_11.FINALS.Semantika import IdentifiersTable
 
 def analyze_program(path_to_program, print_info=True):
     identifiers_table = IdentifiersTable()
@@ -8,10 +8,6 @@ def analyze_program(path_to_program, print_info=True):
     lexer.analysis()
 
     if lexer.current.state != lexer.states.ERR:
-        if print_info:
-            print("Result of Lexical Analyzer:")
-            for i in lexer.lexeme_table:
-                print(f"{i.token_name} {i.token_value}")
 
         syntax_analyzer = SyntacticalAnalyzer(lexer.lexeme_table, identifiers_table)
         syntax_analyzer.PROGRAMM()
@@ -21,7 +17,7 @@ def analyze_program(path_to_program, print_info=True):
             print(identifiers_table)
 
         print("+---------+")
-        print("| SUCCESS |")
+        print("|ВСЁ СУПЕР|")
         print("+---------+")
 
 if __name__ == "__main__":
