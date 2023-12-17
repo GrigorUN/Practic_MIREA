@@ -197,7 +197,7 @@ class Token:
         self.token_name = token_name
         self.token_value = token_value
     def __repr__(self):
-        return f"{self.token_name} ::= {self.token_value}"
+        return f"{self.token_name} -> {self.token_value}"
 
 
 class States(NamedTuple):
