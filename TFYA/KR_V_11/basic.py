@@ -121,7 +121,6 @@ KEYWORDS =[
     'while',
     'func',
     'end',
-    'program'
 ]
 
 
