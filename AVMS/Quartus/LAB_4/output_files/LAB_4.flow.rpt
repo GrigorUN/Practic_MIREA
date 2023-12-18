@@ -1,5 +1,5 @@
 Flow report for LAB_4
-Mon Dec 11 11:20:45 2023
+Mon Dec 18 10:56:23 2023
 Quartus II 64-Bit Version 13.1.0 Build 162 10/23/2013 SJ Web Edition
 
 
@@ -40,7 +40,7 @@ applicable agreement for further details.
 +------------------------------------------------------------------------+
 ; Flow Summary                                                           ;
 +---------------------------+--------------------------------------------+
-; Flow Status               ; Successful - Mon Dec 11 11:20:45 2023      ;
+; Flow Status               ; Successful - Mon Dec 18 10:56:22 2023      ;
 ; Quartus II 64-Bit Version ; 13.1.0 Build 162 10/23/2013 SJ Web Edition ;
 ; Revision Name             ; LAB_4                                      ;
 ; Top-level Entity Name     ; LAB_4                                      ;
@@ -48,7 +48,7 @@ applicable agreement for further details.
 ; Device                    ; EPM240F100C4                               ;
 ; Timing Models             ; Final                                      ;
 ; Total logic elements      ; 8 / 240 ( 3 % )                            ;
-; Total pins                ; 11 / 76 ( 14 % )                           ;
+; Total pins                ; 7 / 76 ( 9 % )                             ;
 ; Total virtual pins        ; 0                                          ;
 ; UFM blocks                ; 0 / 1 ( 0 % )                              ;
 +---------------------------+--------------------------------------------+
@@ -59,7 +59,7 @@ applicable agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 12/11/2023 11:19:39 ;
+; Start date & time ; 12/18/2023 10:56:08 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; LAB_4               ;
 +-------------------+---------------------+
@@ -70,7 +70,7 @@ applicable agreement for further details.
 +---------------------------------+-------------------------------------------------------------------------------------+---------------+-------------+----------------+
 ; Assignment Name                 ; Value                                                                               ; Default Value ; Entity Name ; Section Id     ;
 +---------------------------------+-------------------------------------------------------------------------------------+---------------+-------------+----------------+
-; COMPILER_SIGNATURE_ID           ; 10995770589201.170228277907756                                                      ; --            ; --          ; --             ;
+; COMPILER_SIGNATURE_ID           ; 10995770589201.170288616810224                                                      ; --            ; --          ; --             ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST ; On                                                                                  ; --            ; --          ; eda_simulation ;
 ; EDA_NETLIST_WRITER_OUTPUT_DIR   ; C:/Users/SystemX/Documents/GitHub/Practic_MIREA/AVMS/Quartus/LAB_4/simulation/qsim/ ; --            ; --          ; eda_simulation ;
 ; EDA_OUTPUT_DATA_FORMAT          ; Verilog Hdl                                                                         ; --            ; --          ; eda_simulation ;
@@ -88,13 +88,11 @@ applicable agreement for further details.
 ; Module Name               ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Analysis & Synthesis      ; 00:00:02     ; 1.0                     ; 4593 MB             ; 00:00:01                           ;
-; Fitter                    ; 00:00:03     ; 1.0                     ; 5642 MB             ; 00:00:04                           ;
+; Fitter                    ; 00:00:03     ; 1.0                     ; 5612 MB             ; 00:00:03                           ;
 ; Assembler                 ; 00:00:01     ; 1.0                     ; 4561 MB             ; 00:00:01                           ;
-; TimeQuest Timing Analyzer ; 00:00:01     ; 1.0                     ; 4587 MB             ; 00:00:01                           ;
-; EDA Netlist Writer        ; 00:00:01     ; 1.0                     ; 4521 MB             ; 00:00:01                           ;
-; EDA Netlist Writer        ; 00:00:00     ; 1.0                     ; 4539 MB             ; 00:00:01                           ;
-; EDA Netlist Writer        ; 00:00:01     ; 1.0                     ; 4539 MB             ; 00:00:01                           ;
-; Total                     ; 00:00:09     ; --                      ; --                  ; 00:00:10                           ;
+; TimeQuest Timing Analyzer ; 00:00:02     ; 1.0                     ; 4593 MB             ; 00:00:01                           ;
+; EDA Netlist Writer        ; 00:00:00     ; 1.0                     ; 4521 MB             ; 00:00:01                           ;
+; Total                     ; 00:00:08     ; --                      ; --                  ; 00:00:07                           ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
@@ -108,8 +106,6 @@ applicable agreement for further details.
 ; Assembler                 ; DESKTOP-RTJPU19  ; Windows 7 ; 6.2        ; x86_64         ;
 ; TimeQuest Timing Analyzer ; DESKTOP-RTJPU19  ; Windows 7 ; 6.2        ; x86_64         ;
 ; EDA Netlist Writer        ; DESKTOP-RTJPU19  ; Windows 7 ; 6.2        ; x86_64         ;
-; EDA Netlist Writer        ; DESKTOP-RTJPU19  ; Windows 7 ; 6.2        ; x86_64         ;
-; EDA Netlist Writer        ; DESKTOP-RTJPU19  ; Windows 7 ; 6.2        ; x86_64         ;
 +---------------------------+------------------+-----------+------------+----------------+
 
 
@@ -121,8 +117,6 @@ quartus_fit --read_settings_files=off --write_settings_files=off LAB_4 -c LAB_4
 quartus_asm --read_settings_files=off --write_settings_files=off LAB_4 -c LAB_4
 quartus_sta LAB_4 -c LAB_4
 quartus_eda --read_settings_files=off --write_settings_files=off LAB_4 -c LAB_4
-quartus_eda --gen_testbench --check_outputs=on --tool=modelsim_oem --format=verilog LAB_4 -c LAB_4 --vector_source=C:/Users/SystemX/Documents/GitHub/Practic_MIREA/AVMS/Quartus/LAB_4/Waveform2.vwf --testbench_file=C:/Users/SystemX/Documents/GitHub/Practic_MIREA/AVMS/Quartus/LAB_4/simulation/qsim/Waveform2.vwf.vt
-quartus_eda --functional=on --flatten_buses=off --simulation=on --tool=modelsim_oem --format=verilog --output_directory=C:/Users/SystemX/Documents/GitHub/Practic_MIREA/AVMS/Quartus/LAB_4/simulation/qsim/ LAB_4 -c LAB_4
 
 
 
