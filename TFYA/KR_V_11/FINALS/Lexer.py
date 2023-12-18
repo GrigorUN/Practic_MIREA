@@ -26,8 +26,6 @@ class LexicalAnalyzer:
         while not self.current.eof_state:
             if self.current.state == self.states.H:
                 self.h_state_processing()
-            elif self.current.state == self.states.COMM:
-                self.comm_state_processing()
             elif self.current.state == self.states.ID:
                 self.id_state_processing()
             elif self.current.state == self.states.ERR:
@@ -46,21 +44,9 @@ class LexicalAnalyzer:
             self.current.state = self.states.NM
         elif self.current.symbol in (self.delimiters | self.operators | self.types | self.arith):
             self.current.state = self.states.DLM
-        elif self.current.symbol == "{":
-            self.current.state = self.states.COMM
         else:
             self.current.state = self.states.ERR
 
-    def comm_state_processing(self):
-        while not self.current.eof_state and self.current.symbol != "}":
-            self.current.re_assign(*next(self.fgetc))
-        if self.current.symbol == "}":
-            self.current.state = self.states.H
-            if not self.current.eof_state:
-                self.current.re_assign(*next(self.fgetc))
-        else:
-            self.error.symbol = self.current.symbol
-            self.current.state = self.states.ERR
 
     def dlm_state_processing(self):
         if self.current.symbol in self.delimiters | self.arith | self.types:

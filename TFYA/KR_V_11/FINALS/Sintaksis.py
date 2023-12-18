@@ -111,10 +111,10 @@ class SyntacticalAnalyzer:
     def CONDITIONAL_OPERATOR(self):
         self.equal_token_value("if")
         if self.current_lex.token_value == "(":
-            self.current_lex = next(self.lex_get)  # Пропускаем открывающую скобку
+            self.current_lex = next(self.lex_get)
             self.EXPRESSION()
             if self.current_lex.token_value == ")":
-                self.current_lex = next(self.lex_get)  # Пропускаем закрывающую скобку
+                self.current_lex = next(self.lex_get)  
             else:
                 self.throw_error()
         else:
@@ -129,7 +129,7 @@ class SyntacticalAnalyzer:
 
 
 
-    def FIXED_CYCLE_OPERATOR(self):
+    def FIXED_CYCLE_OPERATOR(self): #<фиксированного_цикла>::= for <присваивания> to <выражение>[step <выражение>] <оператор> next
         self.equal_token_value("for")
         self.ASSIGNMENT_OPERATOR()
 
@@ -150,9 +150,6 @@ class SyntacticalAnalyzer:
                 self.current_lex = next(self.lex_get)
             else:
                 self.throw_error()
-
-            # Теперь вы можете использовать переменные end_expression и step_expression
-            # для обработки логики цикла
         else:
             self.throw_error()
 

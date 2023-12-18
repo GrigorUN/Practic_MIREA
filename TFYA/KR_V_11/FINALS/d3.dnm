@@ -1,6 +1,6 @@
 program
 var a: $;
-    d: %;
+    d: !;
 begin
     a := false;
     for d := 1 to d <= 100
