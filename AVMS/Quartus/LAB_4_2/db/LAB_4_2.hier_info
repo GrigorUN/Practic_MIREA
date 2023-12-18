@@ -4,6 +4,7 @@ a => r1.IN0
 b => r2.IN0
 b => r3.IN0
 b => r4.IN0
+b => r5.IN0
 clock => tq[3].CLK
 clock => tq[2].CLK
 clock => tq[1].CLK

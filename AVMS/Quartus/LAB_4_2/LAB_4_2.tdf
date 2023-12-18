@@ -1,4 +1,4 @@
-subdesign 'LAB_4_2'
+ subdesign 'LAB_4_2'
 (
 a,b,clock:input;
 q[3..0]:output;
@@ -24,17 +24,17 @@ st[13] = q[0] & !q[1] & q[2] & q[3];
 st[14] = !q[0] & q[1] & q[2] & q[3];
 st[15] = q[0] & q[1] & q[2] & q[3];
 
-r0 = !a & st[1];
-r1 = a & st[1];
-r2 = !b & st[4];
-r3 = b & st[4];
-r4 = !b & st[11];
-r5 = b & st[11];
+r0 = !a & st[12];
+r1 = a & st[12];
+r2 = !b & st[6];
+r3 = b & st[6];
+r4 = !b & st[13];
+r5 = b & st[13];
 
-newq[0] = st[9] # st[10] # r2 # st[7] # st[2] # st[12] # r4 # st[3] # st[5] # st[6];
-newq[1] = r0 # r2# r3 # st[7] # st[8] # st[14] # st[12] # r4 # st[5] # st[6];
-newq[2] = r1 # st[10] # st[13] # r2 # r3 # st[7] # st[8] # st[3] # st[5] # st[6];
-newq[3] = r0 # r1 # st[10] # st[7] # st[8] # st[2] # st[12] # st[5] # st[6];
+newq[0] = r0 # r1 # r3 # st[2] # st[9] # st[11] # r5 # st[0] # st[5];
+newq[1] = r1 # st[4] # r3 # st[8] # st[10] # st[14] # st[11] # st[0] # st[15] # st[7] # st[5];
+newq[2] = st[11] # r0 # st[13] # st[4] # r3 # st[10] # r5 # st[0] # st[5];
+newq[3] = st[1] # r0 # r1 # r2 # st[8] # st[10] # st[2] # st[0] # st[15] # st[7] # st[5];
 
 tq[0].clk = clock;
 tq[0].d = newq[0];
