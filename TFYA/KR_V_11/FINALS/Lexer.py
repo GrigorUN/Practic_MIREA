@@ -74,6 +74,14 @@ class LexicalAnalyzer:
                             self.current.re_assign(*next(self.fgetc))
                         self.current.state = self.states.H
                         return
+                    elif self.current.symbol == "(":
+                        # Добавьте обработку, если после "!" идет "("
+                        self.add_token(self.token_names.OPER, temp_symbol)
+                        self.add_token(self.token_names.DELIM, "(")
+                        if not self.current.eof_state:
+                            self.current.re_assign(*next(self.fgetc))
+                        self.current.state = self.states.H
+                        return
                     else:
                         self.add_token(self.token_names.TYPE, temp_symbol)
                 else:
