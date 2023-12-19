@@ -1,6 +1,7 @@
 program 
 var r1, r2, r3: !;
 
+
 begin
 r1 := 12.2;
 
