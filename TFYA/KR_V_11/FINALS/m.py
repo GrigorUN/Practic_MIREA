@@ -1,7 +1,7 @@
-from TFYA.KR_V_11.FINALS.Lexer import LexicalAnalyzer, Tokens, Token
+from Lexer import LexicalAnalyzer, Tokens, Token
 
 def main():
-    filename = "d.dnm"  # Замените на имя вашего входного файла
+    filename = "d2.dnm"  # Замените на имя вашего входного файла
     identifiersTable = set()  # Ваша таблица идентификаторов
 
     lexical_analyzer = LexicalAnalyzer(filename, identifiersTable)

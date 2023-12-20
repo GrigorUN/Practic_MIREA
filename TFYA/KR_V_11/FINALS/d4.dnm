@@ -1,0 +1,18 @@
+program 
+var r1, r2, r3: !;
+
+
+begin
+r1 := 12.2;
+
+r2 := 9Dh;
+
+r3 := 11101001b;
+
+if (r1 > 10)
+    begin
+        readln r1;
+        writeln r1
+    end
+
+end@
