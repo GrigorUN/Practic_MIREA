@@ -1,18 +1,12 @@
 program 
 var r1, r2, r3: !;
-
-
 begin
-r4 := 12.2;
-
-r2 := 9Dh;
-
-r3 := 2.3e+1;
-
-while (!(r2) != 100 &&  r1 <= 100)
-    begin
-        r3 := r3*17;
-        r2 := r2 - 10
-    end
-
+    r1 := 12.2;
+    r4 := 9Dh;
+    r3 := 2.3e+1;
+    while (!(r2) != 100 &&  r1 <= 100)
+        begin
+            r3 := r3*17;
+            r2 := r2 - 10
+        end
 end@

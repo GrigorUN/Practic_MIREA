@@ -8,10 +8,10 @@ def analyze_program(path_to_program, print_info=True):
     lexer.analysis()
 
     if lexer.current.state != lexer.states.ERR:
-        if PRINT_INFO:
-            print("Результат лексера:")
-            for i in lexer.lexeme_table:
-                print(f"{i.token_name} {i.token_value}")
+        # if PRINT_INFO:
+        #     print("Результат лексера:")
+        #     for i in lexer.lexeme_table:
+        #         print(f"{i.token_name} {i.token_value}")
 
         syntax_analyzer = SyntacticalAnalyzer(lexer.lexeme_table, identifiers_table)
         syntax_analyzer.PROGRAMM()
