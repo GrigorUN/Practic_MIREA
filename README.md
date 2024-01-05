@@ -1,5 +1,4 @@
 # Практические работы
-![гифка_с_котом](https://giffun.ru/wp-content/uploads/2022/08/6c90288d7e10d46d18895f17f420a92c.gif)
 
 <img src="https://giffun.ru/wp-content/uploads/2022/08/6c90288d7e10d46d18895f17f420a92c.gif" width="200">
 
