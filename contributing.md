@@ -4,7 +4,7 @@
 
 ## Контакты
 
-- Вконтакте: [✔](сhttps://vk.com/gr1sha_44)
+- Вконтакте: [✔](https://vk.com/gr1sha_44)
 - Телеграм: [✔](https://t.me/gr1sha_44)
 
 
