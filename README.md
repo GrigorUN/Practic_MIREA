@@ -1,5 +1,5 @@
 # Практические работы
-![гифка_с_котом](https://www.google.com/url?sa=i&url=https%3A%2F%2Fgiffun.ru%2Fpitomtsy%2Fprikolnye-gifki-s-kotami-pechatayushhimi-na-klaviature-30-kartinok&psig=AOvVaw3EvjZ7S0GVs0LXjdthisBF&ust=1704544096937000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCODArd6fxoMDFQAAAAAdAAAAABAD)
+![гифка_с_котом](https://giffun.ru/wp-content/uploads/2022/08/6c90288d7e10d46d18895f17f420a92c.gif)
 
 Тут всякие практики и т.д.
 
