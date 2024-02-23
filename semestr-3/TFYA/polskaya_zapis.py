@@ -2,6 +2,7 @@
 def is_operator(token):
     return token in "+-*/"
 
+
 # Функция для определения приоритета оператора
 def precedence(token):
     if token in "+-":
