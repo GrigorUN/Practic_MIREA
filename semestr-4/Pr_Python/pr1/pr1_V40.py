@@ -10,4 +10,3 @@ def main(z, x, y):
     c = z ** 6 + 22 * (math.atan(6 + y ** 2 + 64 * x)) ** 3
     res = a + b / c
     return res
-
