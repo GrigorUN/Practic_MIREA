@@ -18,6 +18,8 @@
 1. [ТРПП](semestr-4/TRPP/)
 2. [Пр_Питон](semestr-4/Pr_Python/)
 3. [ММ](semestr-4/MM/)
+4. [BD](semestr-4/BD/)
+5. [АКМС](semestr-4/AKMS/)
 
 
 ## Помощь утопающим 
