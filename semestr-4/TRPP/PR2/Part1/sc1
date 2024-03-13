@@ -1,0 +1,12 @@
+#!/bin/bash
+# Получаем текущую дату и время
+current_date=$(date +"%Y-%m-%d")
+current_time=$(date +"%H:%M:%S")
+# Получаем список зарегистрированных пользователей
+user_list=$(cut -d: -f1 /etc/passwd)
+# Получаем uptime системы
+system_uptime=$(uptime)
+# Формируем сообщение с информацией
+message="Дата: $current_date\nВремя: $current_time\nСписок пользователей: $user_list\nUptime системы: $system_uptime"
+# Печатаем сообщение и сохраняем его в файл
+echo -e "$message" > system_info.txt
