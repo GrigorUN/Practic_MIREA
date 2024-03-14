@@ -1,0 +1,26 @@
+#!/bin/bash
+
+cd blocknote-master
+echo -n > requirements.txt
+for i in $(find -name '*.py')
+do
+    grep -ohP '(?<=^from )\w+|(?<=^import )(\w+)' $i >> requirements.txt
+done
+
+sort -u -o requirements.txt requirements.txt
+
+apt install python3
+apt install python3-pip
+apt install python3-virtualenv
+
+virtualenv venv
+source venv/bin/activate
+
+for i in $(cat requirements.txt)
+do
+    pip install $i
+done
+
+deactivate
+
+cd ..
