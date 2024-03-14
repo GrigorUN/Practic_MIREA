@@ -1,0 +1,30 @@
+Дата: 2024-03-14
+Время: 18:50:25
+Список пользователей: root
+daemon
+bin
+sys
+sync
+games
+man
+lp
+mail
+news
+uucp
+proxy
+www-data
+backup
+list
+irc
+gnats
+nobody
+systemd-network
+systemd-resolve
+messagebus
+systemd-timesync
+syslog
+_apt
+uuidd
+tcpdump
+number1
+Uptime системы:  18:50:25 up 1 min,  0 users,  load average: 0.52, 0.58, 0.59
