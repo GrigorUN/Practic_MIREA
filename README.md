@@ -20,6 +20,7 @@
 3. [ММ](semestr-4/MM/)
 4. [BD](semestr-4/BD/)
 5. [АКМС](semestr-4/AKMS/)
+6. [ТПР](semestr-4/ТПР/)
 
 
 ## Помощь утопающим 
