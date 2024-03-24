@@ -1,0 +1,5 @@
+Engagement (Вовлеченность)
+Satisfaction (Удовлетворенность)
+Budget (Бюджет)
+Preference (Предпочтения)
+Trust (Доверие)
