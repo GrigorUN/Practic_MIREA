@@ -882,7 +882,7 @@
 					<Rotation>0.0</Rotation>
 					<Color>-16777216</Color>
 					<Text><![CDATA[value]]></Text>
-					<TextCode><![CDATA[slider2.getValue()]]></TextCode>
+					<TextCode><![CDATA[slider3.getValue()]]></TextCode>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>10</Size>
@@ -992,7 +992,7 @@
 					<Rotation>0.0</Rotation>
 					<Color>-16777216</Color>
 					<Text><![CDATA[value]]></Text>
-					<TextCode><![CDATA[slider2.getValue()]]></TextCode>
+					<TextCode><![CDATA[slider4.getValue()]]></TextCode>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>10</Size>
@@ -1466,7 +1466,7 @@
 							<Code><![CDATA[triangular(1, main.InfluenceOfOthers, 2)]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
 						</Timeout>
-						<Condition><![CDATA[main.PopulyarOZON > main.PopulyarWB]]></Condition>
+						<Condition><![CDATA[main.PopulyarOZON > main.PopulyarWB && main.PopulyarOZON > main.PopulyarYandex]]></Condition>
 						<Rate Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="RateUnits"><![CDATA[PER_DAY]]></Unit>
