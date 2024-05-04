@@ -1,0 +1,303 @@
+object TProject
+  Left = 185
+  Top = 168
+  Width = 560
+  Height = 120
+  ScaleType = stDiscrete
+  CriterionList = <>
+  ExpertList = <>
+  LevelFont.Charset = RUSSIAN_CHARSET
+  LevelFont.Color = clWindowText
+  LevelFont.Height = -11
+  LevelFont.Name = 'Arial'
+  LevelFont.Style = [fsBold]
+  NodeFont.Charset = RUSSIAN_CHARSET
+  NodeFont.Color = clWindowText
+  NodeFont.Height = -11
+  NodeFont.Name = 'Times New Roman'
+  NodeFont.Style = []
+  HierarchyList = <
+    item
+      BaseName = #1059#1088#1086#1074#1077#1085#1100
+      Name = #1048#1077#1088#1072#1088#1093#1080#1103'1'
+      LevelList = <
+        item
+          BaseName = #1059#1079#1077#1083
+          Name = ' '
+          NodeList = <
+            item
+              Name = #1042#1099#1073#1086#1088' '#1041#1072#1088#1073#1077#1088#1096#1086#1087#1072
+              LinkList = <>
+              Priority = 1.000000000000000000
+              Matrix.Width = 4
+              Matrix.Height = 4
+              Matrix.Items = (
+                1.000000000000000000
+                0.250000000000000000
+                6.000000000000000000
+                9.000000000000000000
+                4.000000000000000000
+                1.000000000000000000
+                3.000000000000000000
+                7.000000000000000000
+                0.166666666666666700
+                0.333333333333333300
+                1.000000000000000000
+                5.000000000000000000
+                0.111111111111111100
+                0.142857142857142900
+                0.200000000000000000
+                1.000000000000000000)
+            end>
+        end
+        item
+          BaseName = #1059#1079#1077#1083
+          Name = '   '
+          NodeList = <
+            item
+              Name = #1050'1'
+              LinkList = <
+                item
+                  Weight = 0.321660795172943200
+                  NodeName = ' .'#1042#1099#1073#1086#1088' '#1041#1072#1088#1073#1077#1088#1096#1086#1087#1072
+                end>
+              Priority = 0.321660795172943200
+              Matrix.Width = 4
+              Matrix.Height = 4
+              Matrix.Items = (
+                1.000000000000000000
+                0.333333333333333300
+                3.000000000000000000
+                7.000000000000000000
+                3.000000000000000000
+                1.000000000000000000
+                3.000000000000000000
+                7.000000000000000000
+                0.333333333333333300
+                0.333333333333333300
+                1.000000000000000000
+                5.000000000000000000
+                0.142857142857142900
+                0.142857142857142900
+                0.200000000000000000
+                1.000000000000000000)
+            end
+            item
+              Name = #1050'2'
+              LinkList = <
+                item
+                  Weight = 0.525822166819938000
+                  NodeName = ' .'#1042#1099#1073#1086#1088' '#1041#1072#1088#1073#1077#1088#1096#1086#1087#1072
+                end>
+              Priority = 0.525822166819938000
+              Matrix.Width = 4
+              Matrix.Height = 4
+              Matrix.Items = (
+                1.000000000000000000
+                0.333333333333333300
+                1.000000000000000000
+                0.333333333333333300
+                3.000000000000000000
+                1.000000000000000000
+                0.333333333333333300
+                1.000000000000000000
+                1.000000000000000000
+                3.000000000000000000
+                1.000000000000000000
+                0.333333333333333300
+                3.000000000000000000
+                1.000000000000000000
+                3.000000000000000000
+                1.000000000000000000)
+            end
+            item
+              Name = #1050'3'
+              LinkList = <
+                item
+                  Weight = 0.115302538592077000
+                  NodeName = ' .'#1042#1099#1073#1086#1088' '#1041#1072#1088#1073#1077#1088#1096#1086#1087#1072
+                end>
+              Priority = 0.115302538592077000
+              Matrix.Width = 4
+              Matrix.Height = 4
+              Matrix.Items = (
+                1.000000000000000000
+                0.333333333333333300
+                3.000000000000000000
+                0.142857142857142900
+                3.000000000000000000
+                1.000000000000000000
+                5.000000000000000000
+                0.333333333333333300
+                0.333333333333333300
+                0.200000000000000000
+                1.000000000000000000
+                0.142857142857142900
+                7.000000000000000000
+                3.000000000000000000
+                7.000000000000000000
+                1.000000000000000000)
+            end
+            item
+              Name = #1050'4'
+              LinkList = <
+                item
+                  Weight = 0.037214499415041870
+                  NodeName = ' .'#1042#1099#1073#1086#1088' '#1041#1072#1088#1073#1077#1088#1096#1086#1087#1072
+                end>
+              Priority = 0.037214499415041870
+              Matrix.Width = 4
+              Matrix.Height = 4
+              Matrix.Items = (
+                1.000000000000000000
+                3.000000000000000000
+                0.333333333333333300
+                1.000000000000000000
+                0.333333333333333300
+                1.000000000000000000
+                0.200000000000000000
+                0.333333333333333300
+                3.000000000000000000
+                5.000000000000000000
+                1.000000000000000000
+                3.000000000000000000
+                1.000000000000000000
+                3.000000000000000000
+                0.333333333333333300
+                1.000000000000000000)
+            end>
+        end
+        item
+          BaseName = #1059#1079#1077#1083
+          Name = '  '
+          NodeList = <
+            item
+              Name = #1040'1'
+              LinkList = <
+                item
+                  Weight = 0.291983940485346900
+                  NodeName = '   .'#1050'1'
+                end
+                item
+                  Weight = 0.127008652657602000
+                  NodeName = '   .'#1050'2'
+                end
+                item
+                  Weight = 0.104946571385508000
+                  NodeName = '   .'#1050'3'
+                end
+                item
+                  Weight = 0.199839670178653200
+                  NodeName = '   .'#1050'4'
+                end>
+              Priority = 0.180241290805796500
+              Matrix.Width = 0
+              Matrix.Height = 0
+              Matrix.Items = ()
+            end
+            item
+              Name = #1040'2'
+              LinkList = <
+                item
+                  Weight = 0.510567328448609300
+                  NodeName = '   .'#1050'1'
+                end
+                item
+                  Weight = 0.232076637824474700
+                  NodeName = '   .'#1050'2'
+                end
+                item
+                  Weight = 0.249049441474030000
+                  NodeName = '   .'#1050'3'
+                end
+                item
+                  Weight = 0.078103527256069630
+                  NodeName = '   .'#1050'4'
+                end>
+              Priority = 0.317883149933534400
+              Matrix.Width = 0
+              Matrix.Height = 0
+              Matrix.Items = ()
+            end
+            item
+              Name = #1040'3'
+              LinkList = <
+                item
+                  Weight = 0.152494092668224100
+                  NodeName = '   .'#1050'1'
+                end
+                item
+                  Weight = 0.259888751545117400
+                  NodeName = '   .'#1050'2'
+                end
+                item
+                  Weight = 0.053934698532713660
+                  NodeName = '   .'#1050'3'
+                end
+                item
+                  Weight = 0.522217132386623900
+                  NodeName = '   .'#1050'4'
+                end>
+              Priority = 0.211359494403166700
+              Matrix.Width = 0
+              Matrix.Height = 0
+              Matrix.Items = ()
+            end
+            item
+              Name = #1040'4'
+              LinkList = <
+                item
+                  Weight = 0.044954638397819640
+                  NodeName = '   .'#1050'1'
+                end
+                item
+                  Weight = 0.381025957972805900
+                  NodeName = '   .'#1050'2'
+                end
+                item
+                  Weight = 0.592069288607748400
+                  NodeName = '   .'#1050'3'
+                end
+                item
+                  Weight = 0.199839670178653200
+                  NodeName = '   .'#1050'4'
+                end>
+              Priority = 0.290516064857502400
+              Matrix.Width = 0
+              Matrix.Height = 0
+              Matrix.Items = ()
+            end>
+        end>
+    end>
+  HierarchyIndex = 0
+  Alignment = taCenter
+  ShowOptions = [soLevelName, soNodeName]
+  LevelCaptionAlignment = taRightJustify
+  CircleDX = 50
+  CircleDY = 10
+  CircleInterval = 10
+  LevelInterval = 50
+  BackgroundColor = clWhite
+  FrameColor = clBlack
+  FrameWidth = 1
+  LevelCaptionWidth = 130
+  LevelCaptionBackground = 12706047
+  NodeColor = clWhite
+  ZeroNodeColor = clWhite
+  LinkWidth = 2
+  LinkColor = clBlack
+  LevelColor = 11263486
+  ViewMode = True
+  NodeStyle = nsRect
+  ChartTitle = #1044#1080#1072#1075#1088#1072#1084#1084#1072' '#1088#1077#1079#1091#1083#1100#1090#1072#1090#1072
+  Caption = ''
+  ChartType = ctPie
+  Multicolored = True
+  DiagramColor = clLime
+  Calculated = True
+  ExpertRated = True
+  ProjectFilerClassName = 'TSimpleProjectFiler'
+  ShowHint = True
+end
+object TTrackMatrixReceiver
+end
