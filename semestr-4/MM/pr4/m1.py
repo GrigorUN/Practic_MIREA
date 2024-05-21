@@ -1,92 +1,119 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
+import tkinter as tk
 import random
 
-class Marketplace:
-    def __init__(self, size):
-        self.size = size
-        self.grid = np.zeros(size)
-    
-    def add_user(self, position):
-        self.grid[position] = 1
-    
-    def remove_user(self, position):
-        self.grid[position] = 0
-    
-    def add_product(self, position):
-        self.grid[position] = 2
-    
-    def remove_product(self, position):
-        self.grid[position] = 0
-    
-    def decay_product(self, position):
-        self.grid[position] = 3
-    
-    def display(self):
-        plt.imshow(self.grid, cmap='YlGn', origin='lower')
-        plt.colorbar(ticks=[0, 1, 2, 3], label='State')
-        plt.title('Пользователи и распространение продуктов')
-        plt.xlabel('X')
-        plt.ylabel('Y')
-        plt.show()
+class Seller:
+    def __init__(self, canvas, x, y):
+        self.canvas = canvas
+        self.x = x
+        self.y = y
+        self.state = "Новичок"
+        self.shape = canvas.create_rectangle(x-4, y-4, x+4, y+4, fill="blue")
+
+    def become_experienced(self):
+        if self.state == "Новичок":
+            self.state = "Опытный"
+            self.canvas.itemconfig(self.shape, fill="orange")
+
+    def become_successful(self):
+        if self.state == "Опытный":
+            self.state = "Успешный"
+            self.canvas.itemconfig(self.shape, fill="green")
+
+    def become_newbie(self):
+        if self.state == "Опытный":
+            self.state = "Новичок"
+            self.canvas.itemconfig(self.shape, fill="blue")
 
 class MarketplaceSimulation:
-    def __init__(self, marketplace_size, user_count, product_decay_time):
-        self.marketplace = Marketplace(marketplace_size)
-        self.user_count = user_count
-        self.product_decay_time = product_decay_time
-        self.users = []
-        self.products = []
-    
-    def initialize_users(self):
-        for _ in range(self.user_count):
-            position = (random.randint(0, self.marketplace.size[0]-1), random.randint(0, self.marketplace.size[1]-1))
-            self.users.append(position)
-            self.marketplace.add_user(position)
-    
-    def step(self):
-        for user in self.users:
-            if random.random() < 0.1:
-                self.products.append(user)
-                self.marketplace.remove_user(user)
-                self.users.remove(user)
-        
-        for product in self.products:
-            if random.random() < 0.2:
-                new_viewer = (random.randint(0, self.marketplace.size[0]-1), random.randint(0, self.marketplace.size[1]-1))
-                self.users.append(new_viewer)
-                self.marketplace.add_user(new_viewer)
-        
-        for product in self.products[:]:
-            if random.random() < 0.3: 
-                self.products.remove(product)
-                self.marketplace.decay_product(product)
-        
-        for _ in range(self.product_decay_time):
-            self.products = [(x, y) for (x, y) in self.products if (x, y) not in self.users]
-        
-    def run(self, steps):
-        self.initialize_users()
-        fig = plt.figure()
-        ims = []
-        for _ in range(steps):
-            self.step()
-            im = plt.imshow(self.marketplace.grid, cmap='YlGn', animated=True)
-            ims.append([im])
-        ani = animation.ArtistAnimation(fig, ims, interval=500, blit=True, repeat_delay=1000)
-        plt.colorbar(im, label='State')
-        plt.title('Распределение пользователей и продуктов с течением времени')
-        plt.xlabel('X')
-        plt.ylabel('Y')
-        plt.show()
+    def __init__(self, width, height, num_sellers, experience_interval, success_interval, demote_interval, return_interval):
+        self.width = width
+        self.height = height
+        self.num_sellers = num_sellers
+        self.experience_interval = experience_interval
+        self.success_interval = success_interval
+        self.demote_interval = demote_interval
+        self.return_interval = return_interval
+        self.sellers = []
+        self.experienced_count = 0
 
-# Параметры симуляции
-marketplace_size = (20, 20)
-user_count = 50
-product_decay_time = 3
-simulation_steps = 10
+        self.root = tk.Tk()
+        self.root.title("Симуляция маркетплейсов")
+        self.canvas = tk.Canvas(self.root, width=width, height=height, bg="white")
+        self.canvas.pack()
 
-# Запуск симуляции
-simulation = MarketplaceSimulation(marketplace_size, user_count, product_decay_time)
-simulation.run(simulation_steps)
+        self.promote_button = tk.Button(self.root, text="Продвигать продавцов", command=self.promote_random_seller)
+        self.promote_button.pack(side=tk.LEFT)
+
+        self.increase_experience_button = tk.Button(self.root, text="Увеличить промоушен", command=self.increase_experience_interval)
+        self.increase_experience_button.pack(side=tk.LEFT)
+
+        self.decrease_experience_button = tk.Button(self.root, text="Уменьшить промоушен", command=self.decrease_experience_interval)
+        self.decrease_experience_button.pack(side=tk.LEFT)
+
+        self.increase_success_button = tk.Button(self.root, text="Увеличить продажи", command=self.increase_success_interval)
+        self.increase_success_button.pack(side=tk.LEFT)
+
+        self.decrease_success_button = tk.Button(self.root, text="Уменьшить продажи", command=self.decrease_success_interval)
+        self.decrease_success_button.pack(side=tk.LEFT)
+
+        for _ in range(num_sellers):
+            x = random.randint(0, width)
+            y = random.randint(0, height)
+            seller = Seller(self.canvas, x, y)
+            self.sellers.append(seller)
+
+    def promote_random_seller(self):
+        for seller in self.sellers:
+            if seller.state == "Новичок":
+                if random.random() < self.experience_interval:
+                    seller.become_experienced()
+                    self.experienced_count += 1
+
+        self.root.after(100, self.promote_random_seller)
+
+    def update(self):
+        if self.experienced_count > self.num_sellers / 2:
+            self.success_interval = 0.1
+
+        for seller in self.sellers:
+            if seller.state == "Опытный":
+                if random.random() < self.success_interval:
+                    seller.become_successful()
+                    self.experienced_count -= 1
+                elif random.random() < self.demote_interval:
+                    seller.become_newbie()
+                    self.experienced_count -= 1
+            elif seller.state == "Успешный":
+                if random.random() < self.return_interval:
+                    seller.state = "Новичок"
+                    seller.canvas.itemconfig(seller.shape, fill="blue")
+                    self.experienced_count -= 1
+
+        self.root.after(100, self.update)
+
+    def increase_experience_interval(self):
+        self.experience_interval *= 1.1
+
+    def decrease_experience_interval(self):
+        self.experience_interval *= 0.9
+
+    def increase_success_interval(self):
+        self.success_interval *= 0.8
+
+    def decrease_success_interval(self):
+        self.success_interval *= 1.2
+
+    def run(self):
+        self.update()
+        self.root.mainloop()
+
+WIDTH = 500
+HEIGHT = 500
+NUM_SELLERS = 500
+EXPERIENCE_INTERVAL = 0.02
+SUCCESS_INTERVAL = 0.05
+DEMOTE_INTERVAL = 0.03
+RETURN_INTERVAL = 0.05
+
+sim = MarketplaceSimulation(WIDTH, HEIGHT, NUM_SELLERS, EXPERIENCE_INTERVAL, SUCCESS_INTERVAL, DEMOTE_INTERVAL, RETURN_INTERVAL)
+sim.run()
