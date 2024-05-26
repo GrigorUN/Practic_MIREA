@@ -120,7 +120,7 @@
 					<EquationStyle>custom</EquationStyle>
 					<Width>20</Width>
 					<Height>20</Height>
-						<Expression><![CDATA[-InvestmentFlow + MarketDemand]]></Expression>
+						<Expression><![CDATA[-InvestmentFlow + 03*MarketDemand]]></Expression>
 						<InitialValue><![CDATA[TotalInvestment]]></InitialValue>
 						<Color/>
 					</Properties>
